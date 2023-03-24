@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/magazine
+    destination: /home/ubuntu/pens-server
     overwrite: yes
 
 permissions:
@@ -15,4 +15,4 @@ hooks:
   ApplicationStart:
     - location: /scripts/deploy.sh
       timeout: 60
-      runas: ubuntuu
+      runas: ubuntu
