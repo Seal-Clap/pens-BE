@@ -15,7 +15,7 @@ on:
 
 # 해당 코드에서 사용될 변수 설정
 env:
-  PROJECT_NAME: pens-server
+  PROJECT_NAME: pens-server-temp
   BUCKET_NAME: sealclap-test
   CODE_DEPLOY_APP_NAME: codeDeploy-test
   DEPLOYMENT_GROUP_NAME: codeDeploy-test
