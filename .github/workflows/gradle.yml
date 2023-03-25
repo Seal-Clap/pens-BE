@@ -17,8 +17,8 @@ on:
 env:
   PROJECT_NAME: pens-server-temp
   BUCKET_NAME: sealclap-test
-  CODE_DEPLOY_APP_NAME: codeDeploy-test
-  DEPLOYMENT_GROUP_NAME: codeDeploy-test
+  CODE_DEPLOY_APP_NAME: codedeploytest
+  DEPLOYMENT_GROUP_NAME: group-name
 
 jobs:
   build:
