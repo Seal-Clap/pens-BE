@@ -30,4 +30,25 @@ public class UserServiceImpl implements UserService {
             throw new KeyAlreadyExistsException(); // Exception 변경해야 함
         }
     }
+
+    @Override
+    public String validationLogin(UserRequest userRequest) {
+        try {
+            String email = userRequest.getUserEmail();
+            String password = userRequest.getUserPassword();
+            User loginUser = userRepository.findByUserEmail(email);
+
+            if (loginUser == null) {
+                return "해당 이메일의 유저가 존재하지 않습니다.";
+            }
+
+            if (!passwordEncoder.matches(password, loginUser.getUserPassword())) {
+                return "비밀번호가 일치하지 않습니다.";
+            }
+
+            return "success";
+        }catch(Exception e) {
+            return e.toString();
+        }
+    }
 }
