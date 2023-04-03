@@ -17,7 +17,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String register(UserRequest request) {
+        String email = request.getUserEmail();
         try {
+            if (userRepository.findByUserEmail(email) != null) {
+                return "duplicated email";
+            }
             userRepository.save(
                     User.builder()
                             .userName(request.getUserName())
@@ -47,7 +51,7 @@ public class UserServiceImpl implements UserService {
             }
 
             return "success";
-        }catch(Exception e) {
+        } catch (Exception e) {
             return e.toString();
         }
     }
