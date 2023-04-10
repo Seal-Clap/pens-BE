@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.ErrorResponse;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
@@ -55,13 +56,7 @@ public class UserServiceImpl implements UserService {
             if (!passwordEncoder.matches(password, loginUser.getUserPassword())) {
                 return new ResponseEntity("wrong password", HttpStatus.FORBIDDEN);
             }
-
-            String msg = "login success";
-            CommonResponse.CommonResponseBuilder builder = CommonResponse.builder();
-            builder.message(msg);
-            builder.success(true);
-            CommonResponse response = builder.build();
-            return new ResponseEntity(response, HttpStatus.OK);
+            return new ResponseEntity(new CommonResponse(true, "login success"), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity("Error", HttpStatus.BAD_REQUEST);
         }
