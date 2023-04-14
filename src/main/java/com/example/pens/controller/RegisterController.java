@@ -14,7 +14,5 @@ public class RegisterController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity Register(@RequestBody UserRequest request) {
-        return userService.register(request);
-    }
+    public ResponseEntity Register(@RequestBody UserRequest request) { return userService.register(request); }
 }
