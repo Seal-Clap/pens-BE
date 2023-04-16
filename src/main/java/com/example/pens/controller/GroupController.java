@@ -1,7 +1,7 @@
 package com.example.pens.controller;
 
 import com.example.pens.domain.AddUserToGroupRequest;
-import com.example.pens.domain.GroupRequest;
+import com.example.pens.domain.request.GroupRequest;
 import com.example.pens.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

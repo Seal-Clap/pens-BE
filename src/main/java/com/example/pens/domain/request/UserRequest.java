@@ -1,4 +1,4 @@
-package com.example.pens.domain;
+package com.example.pens.domain.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

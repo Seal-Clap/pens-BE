@@ -1,6 +1,6 @@
 package com.example.pens.service;
 
-import com.example.pens.domain.UserRequest;
+import com.example.pens.domain.request.UserRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {

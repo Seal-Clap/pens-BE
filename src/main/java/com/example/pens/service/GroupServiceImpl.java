@@ -1,6 +1,7 @@
 package com.example.pens.service;
 
 import com.example.pens.domain.*;
+import com.example.pens.domain.request.GroupRequest;
 import com.example.pens.repository.GroupRepository;
 import com.example.pens.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

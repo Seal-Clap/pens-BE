@@ -1,6 +1,6 @@
 package com.example.pens.controller;
 
-import com.example.pens.domain.UserRequest;
+import com.example.pens.domain.request.UserRequest;
 import com.example.pens.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

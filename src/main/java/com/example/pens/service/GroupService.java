@@ -1,7 +1,7 @@
 package com.example.pens.service;
 
 import com.example.pens.domain.AddUserToGroupRequest;
-import com.example.pens.domain.GroupRequest;
+import com.example.pens.domain.request.GroupRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface GroupService {
