@@ -1,9 +1,6 @@
 package com.example.pens.service;
 
-import com.example.pens.domain.AddUserToGroupRequest;
-import com.example.pens.domain.Group;
-import com.example.pens.domain.GroupRequest;
-import com.example.pens.domain.User;
+import com.example.pens.domain.*;
 import com.example.pens.repository.GroupRepository;
 import com.example.pens.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.Optional;
 
 @Service
@@ -29,10 +25,9 @@ public class GroupServiceImpl implements GroupService {
                             .groupAdmin(request.getGroupAdmin())
                             .build()
             );
-            return new ResponseEntity("Success", HttpStatus.CREATED);
+            return new ResponseEntity(new CommonResponse(true, "group create success"), HttpStatus.CREATED);
         } catch (Exception e) {
-            System.out.println("Exception : " + e.toString());
-            throw new KeyAlreadyExistsException(); // Exception 변경해야 함
+            return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -51,10 +46,9 @@ public class GroupServiceImpl implements GroupService {
 
             groupRepository.save(group);
             userRepository.save(user);
-            return new ResponseEntity("Success", HttpStatus.OK);
+            return new ResponseEntity(new CommonResponse(true, "group add user success"), HttpStatus.OK);
         } catch (Exception e) {
-            System.out.println(e.toString());
-            throw new KeyAlreadyExistsException();
+            return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
         }
     }
 }

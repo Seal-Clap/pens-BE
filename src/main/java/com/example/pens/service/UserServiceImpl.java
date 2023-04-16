@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
             );
             return new ResponseEntity(new CommonResponse(true, "register success"), HttpStatus.OK);
         } catch (Exception e) {
-            throw new KeyAlreadyExistsException(); // Exception 변경해야 함
+            return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
         }
     }
 
