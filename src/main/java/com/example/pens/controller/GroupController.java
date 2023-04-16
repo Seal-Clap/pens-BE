@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
-@RestController
+@RestController("/group")
 public class GroupController {
     private final GroupService groupService;
 
-    @PostMapping("/createGroup")
+    @PostMapping("/create")
     public ResponseEntity createGroup(@RequestBody GroupRequest request) {
         return groupService.createGroup(request);
     }
 
-    @PostMapping("/addUserToGroup")
+    @PostMapping("/add-user")
     public ResponseEntity addUser(@RequestBody AddUserToGroupRequest request) {
         return groupService.addUserToGroup(request);
     }
