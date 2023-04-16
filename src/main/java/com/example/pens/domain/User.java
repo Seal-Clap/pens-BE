@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "user")
 @Builder
@@ -27,4 +29,7 @@ public class User {
 
     @Column(nullable = false, length = 100)
     private String userPassword;
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Group> groups;
 }
