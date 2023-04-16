@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.ErrorResponse;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
@@ -24,7 +25,7 @@ public class UserServiceImpl implements UserService {
         try {
             if (userRepository.findByUserEmail(email) != null) {
 
-                return new ResponseEntity("duplicated email", HttpStatus.FORBIDDEN);
+                return new ResponseEntity(new CommonResponse(false, "duplicated email"), HttpStatus.CONFLICT);
             }
             userRepository.save(
                     User.builder()
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService {
                             .userPassword(passwordEncoder.encode(request.getUserPassword()))
                             .build()
             );
-            return new ResponseEntity("Success", HttpStatus.OK);
+            return new ResponseEntity(new CommonResponse(true, "register success"), HttpStatus.OK);
         } catch (Exception e) {
             throw new KeyAlreadyExistsException(); // Exception 변경해야 함
         }
@@ -51,17 +52,11 @@ public class UserServiceImpl implements UserService {
             }
 
             if (!passwordEncoder.matches(password, loginUser.getUserPassword())) {
-                return new ResponseEntity("wrong password", HttpStatus.FORBIDDEN);
+                return new ResponseEntity(new CommonResponse(false, "email not exist"), HttpStatus.FORBIDDEN);
             }
-
-            String msg = "login success";
-            CommonResponse.CommonResponseBuilder builder = CommonResponse.builder();
-            builder.message(msg);
-            builder.success(true);
-            CommonResponse response = builder.build();
-            return new ResponseEntity(response, HttpStatus.OK);
+            return new ResponseEntity(new CommonResponse(true, "login success"), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity("Error", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
         }
     }
 }
