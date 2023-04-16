@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +51,19 @@ public class GroupServiceImpl implements GroupService {
             return new ResponseEntity(new CommonResponse(true, "group add user success"), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity getUsersInGroup(int groupId) {
+        Optional<Group> groupOptional = groupRepository.findById(groupId);
+
+        if (groupOptional.isPresent()) {
+            Group group = groupOptional.get();
+            Set<User> users = group.getUsers();
+            return new ResponseEntity(new UsersResponse(List.copyOf(users)), HttpStatus.OK);
+        } else {
+            throw new RuntimeException("Group not found with ID: " + groupId);
         }
     }
 }

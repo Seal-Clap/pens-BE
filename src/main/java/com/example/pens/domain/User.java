@@ -2,11 +2,9 @@ package com.example.pens.domain;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
@@ -14,6 +12,7 @@ import java.util.Set;
 @Table(name = "user")
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -30,6 +29,7 @@ public class User {
     @Column(nullable = false, length = 100)
     private String userPassword;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "users")
     private Set<Group> groups;
 }

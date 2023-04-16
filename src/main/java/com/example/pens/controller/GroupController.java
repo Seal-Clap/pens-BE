@@ -5,12 +5,13 @@ import com.example.pens.domain.GroupRequest;
 import com.example.pens.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RequiredArgsConstructor
-@RestController("/group")
+@RestController
+@RequestMapping("/group")
 public class GroupController {
     private final GroupService groupService;
 
@@ -22,5 +23,10 @@ public class GroupController {
     @PostMapping("/add-user")
     public ResponseEntity addUser(@RequestBody AddUserToGroupRequest request) {
         return groupService.addUserToGroup(request);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity getUsers(@RequestBody GroupRequest request) {
+        return groupService.getUsersInGroup(request.getGroupId());
     }
 }

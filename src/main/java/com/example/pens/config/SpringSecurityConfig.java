@@ -25,7 +25,7 @@ public class SpringSecurityConfig {
                 .and()
                 .authorizeHttpRequests(request -> request
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/test", "/images/**", "/register", "/login", "/createGroup", "/addUserToGroup").permitAll()
+                        .requestMatchers("/test", "/images/**", "/register", "/login", "/group/**").permitAll()
                         .anyRequest().hasRole("USER")
                 )
                 .logout(withDefaults());
