@@ -12,7 +12,7 @@ public class TestController {
     public ResponseEntity test() {
         CommonEntity.CommonEntityBuilder<Object> builder = CommonEntity.builder();
         builder.result("Success");
-        builder.code("200");
+        builder.code(HttpStatus.OK);
         builder.data(null);
         builder.msg("Test Response");
 
