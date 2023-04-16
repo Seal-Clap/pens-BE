@@ -63,7 +63,7 @@ public class GroupServiceImpl implements GroupService {
             Set<User> users = group.getUsers();
             return new ResponseEntity(new UsersResponse(List.copyOf(users)), HttpStatus.OK);
         } else {
-            throw new RuntimeException("Group not found with ID: " + groupId);
+            return new ResponseEntity(new CommonResponse(false, "no group"), HttpStatus.BAD_REQUEST);
         }
     }
 }
