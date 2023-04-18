@@ -2,6 +2,7 @@ package com.example.pens.domain;
 
 
 
+import com.example.pens.domain.auth.Authority;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,4 +33,11 @@ public class User {
 
     @ManyToMany(mappedBy = "users")
     private Set<Group> groups;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_authority",
+            joinColumns = {@JoinColumn(name = "userEmail", referencedColumnName = "userEmail")},
+            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
+    private Set<Authority> authorities;
 }
