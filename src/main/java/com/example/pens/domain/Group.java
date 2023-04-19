@@ -27,7 +27,7 @@ public class Group {
     @Column(nullable = false, length = 50)
     private String groupAdmin;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinTable(
             name = "group_user_relation",
             joinColumns = @JoinColumn(name = "group_id"),
