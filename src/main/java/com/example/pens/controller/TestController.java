@@ -1,6 +1,6 @@
 package com.example.pens.controller;
 
-import com.example.pens.domain.CommonEntity;
+import com.example.pens.domain.CommonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,14 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     @GetMapping("/test")
     public ResponseEntity test() {
-        CommonEntity.CommonEntityBuilder<Object> builder = CommonEntity.builder();
-        builder.result("Success");
-        builder.code(HttpStatus.OK);
-        builder.data(null);
-        builder.msg("Test Response");
-
-        CommonEntity response = builder.build();
-
-        return new ResponseEntity(response, HttpStatus.OK);
+        return new ResponseEntity(new CommonResponse(true, "test success"), HttpStatus.OK);
     }
 }
