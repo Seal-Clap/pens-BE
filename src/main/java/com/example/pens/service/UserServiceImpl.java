@@ -3,17 +3,29 @@ package com.example.pens.service;
 import com.example.pens.domain.CommonResponse;
 import com.example.pens.domain.User;
 import com.example.pens.domain.auth.Authority;
+import com.example.pens.domain.auth.Token;
 import com.example.pens.domain.request.UserRequest;
+import com.example.pens.jwt.JwtFilter;
+import com.example.pens.jwt.JwtTokenProvider;
 import com.example.pens.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.mapping.Set;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 
 @Service
@@ -21,8 +33,11 @@ import java.util.HashSet;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider tokenProvider;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @Override
+    @Transactional
     public ResponseEntity register(UserRequest request) {
         String email = request.getUserEmail();
         try {
@@ -45,27 +60,48 @@ public class UserServiceImpl implements UserService {
 
             return new ResponseEntity(new CommonResponse(true, "register success"), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new CommonResponse(false, "error occurs"), HttpStatus.FORBIDDEN);
         }
     }
 
     @Override
-    public ResponseEntity validationLogin(UserRequest userRequest) {
+    public ResponseEntity login(@Valid @RequestBody UserRequest userRequest) {
         try {
             String email = userRequest.getUserEmail();
             String password = userRequest.getUserPassword();
             User loginUser = userRepository.findByUserEmail(email);
             if (loginUser == null) {
-                String msg = "email not found";
-                return new ResponseEntity("email not found", HttpStatus.FORBIDDEN);
-            }
-
-            if (!passwordEncoder.matches(password, loginUser.getUserPassword())) {
                 return new ResponseEntity(new CommonResponse(false, "email not exist"), HttpStatus.FORBIDDEN);
             }
-            return new ResponseEntity(new CommonResponse(true, "login success"), HttpStatus.OK);
+            if (!passwordEncoder.matches(password, loginUser.getUserPassword())) {
+                return new ResponseEntity(new CommonResponse(false, "wrong password"), HttpStatus.FORBIDDEN);
+            }
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(email, password);
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+            String jwt = tokenProvider.createToken(authentication);
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+
+            HashMap<String, Object> loginResponse = new HashMap<>();
+
+            loginResponse.put("success", true);
+            loginResponse.put("message", "login success");
+            loginResponse.put("userId", loginUser.getUserId());
+            loginResponse.put("token", jwt);
+
+            return new ResponseEntity(loginResponse, httpHeaders, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new CommonResponse(false, "error occurs"), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Override
+    public ResponseEntity identify(@Valid @RequestBody Token token) {
+        return null;
     }
 }
