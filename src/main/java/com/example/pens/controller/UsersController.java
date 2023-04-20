@@ -23,6 +23,6 @@ public class UsersController {
         return userService.register(request);
     }
 
-    @PostMapping("/identity")
+    @GetMapping("/identity")
     public ResponseEntity identify() { return userService.identify(); }
 }
