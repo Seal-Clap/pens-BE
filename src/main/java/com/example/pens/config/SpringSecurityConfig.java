@@ -44,12 +44,12 @@ public class SpringSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/authenticate", "/images/**", "/register", "/login", "/group/**").permitAll()
+                .requestMatchers("/images/**", "/users/login", "/users/register", "/createGroup", "/addUserToGroup").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .apply(new JwtSecurityConfig(jwtTokenProvider));
-
-
+                .apply(new JwtSecurityConfig(jwtTokenProvider))
+                .and()
+                .logout(withDefaults());
         return http.build();
     }
 
