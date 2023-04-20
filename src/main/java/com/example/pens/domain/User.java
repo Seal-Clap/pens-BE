@@ -31,7 +31,7 @@ public class User {
     @Column(nullable = false, length = 100)
     private String userPassword;
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Group> groups;
 
     @ManyToMany
