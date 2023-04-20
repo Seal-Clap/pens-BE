@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class GroupDTO {
-    private Long groupId;
+    private int groupId;
     private String groupName;
     private String groupAdmin;
 }

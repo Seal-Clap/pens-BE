@@ -13,4 +13,6 @@ public interface GroupService {
 
     ResponseEntity deleteUser(groupUserRelationDTO request);
 
+    ResponseEntity getUsersInGroup(GroupDTO request);
+
 }

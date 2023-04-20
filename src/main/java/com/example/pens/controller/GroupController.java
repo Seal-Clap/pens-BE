@@ -5,10 +5,7 @@ import com.example.pens.domain.request.GroupDTO;
 import com.example.pens.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -31,5 +28,10 @@ public class GroupController {
     @PostMapping("/delete-user")
     public ResponseEntity deleteUser(@RequestBody groupUserRelationDTO request) {
         return groupService.deleteUser(request);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity getUsers(@RequestBody GroupDTO request) {
+        return groupService.getUsersInGroup(request);
     }
 }

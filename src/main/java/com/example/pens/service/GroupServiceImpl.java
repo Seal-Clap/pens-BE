@@ -77,5 +77,17 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
+    @Override
+    public ResponseEntity getUsersInGroup(GroupDTO request) {
+        Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
+
+        if (groupOptional.isPresent()) {
+            Group group = groupOptional.get();
+            Set<User> users = group.getUsers();
+            return new ResponseEntity(new UsersResponse(List.copyOf(users)), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new CommonResponse(false, "no group"), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

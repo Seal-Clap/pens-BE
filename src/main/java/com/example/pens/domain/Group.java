@@ -1,5 +1,6 @@
 package com.example.pens.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;
@@ -27,6 +28,7 @@ public class Group {
     private String groupAdmin;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @JsonBackReference
     @JoinTable(
             name = "group_user_relation",
             joinColumns = @JoinColumn(name = "group_id"),
