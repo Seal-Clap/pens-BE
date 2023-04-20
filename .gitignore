@@ -1,5 +1,6 @@
 .DS_STORE
 **/application.properties
+**/application-aws.properties
 HELP.md
 .gradle
 build/
