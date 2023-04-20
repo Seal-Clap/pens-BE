@@ -3,15 +3,14 @@ package com.example.pens.service;
 import com.example.pens.domain.CommonResponse;
 import com.example.pens.domain.User;
 import com.example.pens.domain.auth.Authority;
-import com.example.pens.domain.auth.Token;
 import com.example.pens.domain.request.UserRequest;
 import com.example.pens.jwt.JwtFilter;
 import com.example.pens.jwt.JwtTokenProvider;
 import com.example.pens.repository.UserRepository;
+import com.example.pens.util.SecurityUtil;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.mapping.Set;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +22,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
@@ -101,7 +98,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity identify(@Valid @RequestBody Token token) {
-        return null;
+    public ResponseEntity identify() {
+        return new ResponseEntity(userRepository.findByUserEmail(SecurityUtil.getCurrentUserEmail()).getUserId(), HttpStatus.OK);
     }
 }

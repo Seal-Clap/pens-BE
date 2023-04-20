@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface UserService {
     ResponseEntity register(UserRequest request);
     ResponseEntity login(UserRequest userRequest);
-    ResponseEntity identify(Token token);
+    ResponseEntity identify();
 }
