@@ -3,7 +3,7 @@ package com.example.pens.service;
 import com.example.pens.domain.CommonResponse;
 import com.example.pens.domain.User;
 import com.example.pens.domain.auth.Authority;
-import com.example.pens.domain.request.UserRequest;
+import com.example.pens.domain.request.UserDTO;
 import com.example.pens.jwt.JwtFilter;
 import com.example.pens.jwt.JwtTokenProvider;
 import com.example.pens.repository.UserRepository;
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ResponseEntity register(UserRequest request) {
+    public ResponseEntity register(UserDTO request) {
         String email = request.getUserEmail();
         try {
             if (userRepository.findByUserEmail(email) != null) {
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity login(@Valid @RequestBody UserRequest userRequest) {
+    public ResponseEntity login(@Valid @RequestBody UserDTO userRequest) {
         try {
             String email = userRequest.getUserEmail();
             String password = userRequest.getUserPassword();
