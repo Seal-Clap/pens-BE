@@ -3,18 +3,15 @@ package com.example.pens.service;
 import com.example.pens.domain.CommonResponse;
 import com.example.pens.domain.User;
 import com.example.pens.domain.auth.Authority;
-import com.example.pens.domain.request.UserRequest;
+import com.example.pens.domain.request.UserDTO;
 import com.example.pens.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.mapping.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +20,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public ResponseEntity register(UserRequest request) {
+    public ResponseEntity register(UserDTO request) {
         String email = request.getUserEmail();
         try {
             if (userRepository.findByUserEmail(email) != null) {
@@ -50,7 +47,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity validationLogin(UserRequest userRequest) {
+    public ResponseEntity validationLogin(UserDTO userRequest) {
         try {
             String email = userRequest.getUserEmail();
             String password = userRequest.getUserPassword();

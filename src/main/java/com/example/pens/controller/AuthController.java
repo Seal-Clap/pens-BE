@@ -1,7 +1,7 @@
 package com.example.pens.controller;
 
 import com.example.pens.domain.auth.Token;
-import com.example.pens.domain.request.UserRequest;
+import com.example.pens.domain.request.UserDTO;
 import com.example.pens.jwt.JwtFilter;
 import com.example.pens.jwt.JwtTokenProvider;
 import jakarta.validation.Valid;
@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<Token> authorize(@Valid @RequestBody UserRequest loginDto) {
+    public ResponseEntity<Token> authorize(@Valid @RequestBody UserDTO loginDto) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUserEmail(), loginDto.getUserPassword());

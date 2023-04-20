@@ -1,7 +1,8 @@
 package com.example.pens.service;
 
 import com.example.pens.domain.*;
-import com.example.pens.domain.request.GroupRequest;
+import com.example.pens.domain.request.GroupDTO;
+import com.example.pens.domain.request.groupUserRelationDTO;
 import com.example.pens.repository.GroupRepository;
 import com.example.pens.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class GroupServiceImpl implements GroupService {
     private final UserRepository userRepository;
 
     @Override
-    public ResponseEntity createGroup(GroupRequest request) {
+    public ResponseEntity createGroup(GroupDTO request) {
         try {
             groupRepository.save(
                     Group.builder()
@@ -33,7 +34,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public ResponseEntity addUserToGroup(AddUserToGroupRequest request) {
+    public ResponseEntity addUserToGroup(groupUserRelationDTO request) {
         System.out.println("debug -> groupid:"+request.getGroupId()+ " and userid:" +request.getUserId());
         Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
         Optional<User> userOptional = userRepository.findById(request.getUserId());
@@ -52,4 +53,27 @@ public class GroupServiceImpl implements GroupService {
             return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @Override
+    public ResponseEntity deleteUser(groupUserRelationDTO request) {
+        System.out.println("debug -> groupid:"+request.getGroupId()+ " and userid:" +request.getUserId());
+        Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
+        Optional<User> userOptional = userRepository.findById(request.getUserId());
+
+        try {
+            Group group = groupOptional.get();
+            User user = userOptional.get();
+
+            group.getUsers().remove(user);
+            user.getGroups().remove(group);
+
+            groupRepository.save(group);
+            userRepository.save(user);
+            return new ResponseEntity(new CommonResponse(true, "group delete user success"), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }

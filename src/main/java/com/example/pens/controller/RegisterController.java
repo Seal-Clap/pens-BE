@@ -1,6 +1,6 @@
 package com.example.pens.controller;
 
-import com.example.pens.domain.request.UserRequest;
+import com.example.pens.domain.request.UserDTO;
 import com.example.pens.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,5 +14,5 @@ public class RegisterController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity Register(@RequestBody UserRequest request) { return userService.register(request); }
+    public ResponseEntity Register(@RequestBody UserDTO request) { return userService.register(request); }
 }

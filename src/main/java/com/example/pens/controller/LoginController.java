@@ -1,6 +1,6 @@
 package com.example.pens.controller;
 
-import com.example.pens.domain.request.UserRequest;
+import com.example.pens.domain.request.UserDTO;
 import com.example.pens.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ public class LoginController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity showValidation(@RequestBody UserRequest request) {
+    public ResponseEntity showValidation(@RequestBody UserDTO request) {
         return userService.validationLogin(request);
     }
 }

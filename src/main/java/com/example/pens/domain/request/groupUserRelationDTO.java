@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @NoArgsConstructor
-public class GroupRequest {
-    private String groupName;
-    private String groupAdmin;
+public class groupUserRelationDTO {
+    private int userId;
+    private int groupId;
 }
