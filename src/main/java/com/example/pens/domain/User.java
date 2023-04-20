@@ -3,6 +3,7 @@ package com.example.pens.domain;
 
 
 import com.example.pens.domain.auth.Authority;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,6 +31,7 @@ public class User {
     private String userPassword;
 
     @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Group> groups;
 
     @ManyToMany
