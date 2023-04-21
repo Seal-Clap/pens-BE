@@ -1,12 +1,15 @@
 package com.example.pens.service;
 
 import com.example.pens.domain.*;
+import com.example.pens.domain.redis.GroupInvite;
 import com.example.pens.domain.request.GroupDTO;
 import com.example.pens.domain.request.groupUserRelationDTO;
 import com.example.pens.repository.GroupRepository;
 import com.example.pens.repository.UserRepository;
+import com.example.pens.repository.redis.InviteRedisRepository;
 import com.example.pens.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,7 @@ import java.util.Set;
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
-
+    private final InviteRedisRepository inviteRedisRepository;
     @Override
     public ResponseEntity createGroup(GroupDTO request) {
         try {
@@ -99,9 +102,9 @@ public class GroupServiceImpl implements GroupService {
         if (!requestUserId.equals(groupOptional.get().getGroupAdmin())) {
             return new ResponseEntity<CommonResponse>(new CommonResponse(false, "only group admin can invite user"), HttpStatus.UNAUTHORIZED);
         }
-        //admin 확인 완료
-        // TODO: 초대 진행 redis
-        return new ResponseEntity(new CommonResponse(true, "invite success"), HttpStatus.OK);
+        GroupInvite groupInvite = new GroupInvite(request.getGroupId(), request.getUserId());
+        inviteRedisRepository.save(groupInvite);
+        return new ResponseEntity<CommonResponse>(new CommonResponse(true, "invite success"), HttpStatus.OK);
     }
 
     @Override

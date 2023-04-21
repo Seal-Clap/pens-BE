@@ -1,6 +1,5 @@
 package com.example.pens.jwt;
 
-import com.example.pens.domain.auth.Token;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
