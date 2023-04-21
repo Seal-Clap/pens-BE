@@ -40,7 +40,7 @@ public class GroupController {
         return groupService.invite(request);
     }
 
-    @PostMapping("/invite")
+    @PostMapping("/accept-invite")
     public ResponseEntity acceptInvite(@RequestParam("acceptString") String acceptString) {
         return groupService.acceptInvite(acceptString);
     }
