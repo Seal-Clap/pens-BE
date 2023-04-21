@@ -5,6 +5,7 @@ import com.example.pens.domain.request.GroupDTO;
 import com.example.pens.domain.request.groupUserRelationDTO;
 import com.example.pens.repository.GroupRepository;
 import com.example.pens.repository.UserRepository;
+import com.example.pens.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,7 +93,14 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ResponseEntity invite(groupUserRelationDTO request) {
-        return null;
+        Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
+        String requestEmail = SecurityUtil.getCurrentUserEmail();
+        if (!groupOptional.get().getGroupAdmin().matches(requestEmail)) {
+            return new ResponseEntity(new CommonResponse(false, "only group admin can invite user in group"), HttpStatus.UNAUTHORIZED);
+        }
+        //admin 확인 완료
+        // TODO: 초대 진행 redis
+        return new ResponseEntity(new CommonResponse(true, "invite success"), HttpStatus.OK);
     }
 
     @Override
