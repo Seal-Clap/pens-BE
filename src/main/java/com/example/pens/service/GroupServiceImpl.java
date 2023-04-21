@@ -90,4 +90,14 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
+    @Override
+    public ResponseEntity invite(groupUserRelationDTO request) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity acceptInvite(String acceptString) {
+        return null;
+    }
+
 }

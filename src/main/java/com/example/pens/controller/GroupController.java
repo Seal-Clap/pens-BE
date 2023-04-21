@@ -34,4 +34,14 @@ public class GroupController {
     public ResponseEntity getUsers(@RequestBody GroupDTO request) {
         return groupService.getUsersInGroup(request);
     }
+
+    @PostMapping("/invite")
+    public ResponseEntity invite(@RequestBody groupUserRelationDTO request) {
+        return groupService.invite(request);
+    }
+
+    @PostMapping("/invite")
+    public ResponseEntity acceptInvite(@RequestParam("acceptString") String acceptString) {
+        return groupService.acceptInvite(acceptString);
+    }
 }
