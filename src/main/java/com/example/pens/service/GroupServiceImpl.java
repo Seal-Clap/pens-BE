@@ -94,9 +94,10 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public ResponseEntity invite(groupUserRelationDTO request) {
         Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
-        String requestEmail = SecurityUtil.getCurrentUserEmail();
-        if (!groupOptional.get().getGroupAdmin().matches(requestEmail)) {
-            return new ResponseEntity(new CommonResponse(false, "only group admin can invite user in group"), HttpStatus.UNAUTHORIZED);
+        Integer requestUserId = userRepository.findByUserEmail(SecurityUtil.getCurrentUserEmail()).getUserId();
+
+        if (!requestUserId.equals(groupOptional.get().getGroupAdmin())) {
+            return new ResponseEntity<CommonResponse>(new CommonResponse(false, "only group admin can invite user"), HttpStatus.UNAUTHORIZED);
         }
         //admin 확인 완료
         // TODO: 초대 진행 redis

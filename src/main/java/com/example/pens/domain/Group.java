@@ -25,7 +25,7 @@ public class Group {
     private String groupName;
 
     @Column(nullable = false, length = 50)
-    private String groupAdmin;
+    private int groupAdmin;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     @JsonBackReference

@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class GroupDTO {
     private int groupId;
     private String groupName;
-    private String groupAdmin;
+    private int groupAdmin;
 }
