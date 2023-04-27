@@ -18,4 +18,6 @@ public interface GroupService {
     ResponseEntity invite(GroupUserRelationDTO request);
 
     ResponseEntity acceptInvite(String acceptString);
+
+    ResponseEntity checkIsAdmin(GroupUserRelationDTO request);
 }

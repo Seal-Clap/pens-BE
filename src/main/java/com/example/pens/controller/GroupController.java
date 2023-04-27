@@ -45,4 +45,7 @@ public class GroupController {
     public ResponseEntity acceptInvite(@RequestParam("acceptString") String acceptString) {
         return groupService.acceptInvite(acceptString);
     }
+
+    @GetMapping("/isAdmin")
+    public ResponseEntity checkIsAdmin(@RequestBody GroupUserRelationDTO request) { return groupService.checkIsAdmin(request); }
 }

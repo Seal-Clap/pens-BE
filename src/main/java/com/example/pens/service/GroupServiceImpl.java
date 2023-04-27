@@ -56,7 +56,7 @@ public class GroupServiceImpl implements GroupService {
             if(group.getGroupAdminUser().getUserId() != request.getUserId())
                 return new ResponseEntity<CommonResponse>(new CommonResponse(false, "only group admin can delete group"), HttpStatus.UNAUTHORIZED);
             groupRepository.delete(group);
-            return new ResponseEntity(new CommonResponse(true, "group delete success"), HttpStatus.CREATED);
+            return new ResponseEntity(new CommonResponse(true, "group delete success"), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
         }
@@ -137,6 +137,20 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public ResponseEntity acceptInvite(String acceptString) {
         return null;
+    }
+
+    @Override
+    public ResponseEntity checkIsAdmin(GroupUserRelationDTO request) {
+        Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
+        try {
+            Group group = groupOptional.get();
+            if(group.getGroupAdminUser().getUserId() == request.getUserId())
+                return new ResponseEntity<CommonResponse>(new CommonResponse(true, "admin true"), HttpStatus.OK);
+            else
+                return new ResponseEntity<CommonResponse>(new CommonResponse(false, "admin false"), HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
