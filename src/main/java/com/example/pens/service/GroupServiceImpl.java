@@ -10,8 +10,12 @@ import com.example.pens.repository.redis.InviteRedisRepository;
 import com.example.pens.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +28,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final InviteRedisRepository inviteRedisRepository;
+//    private final JavaMailSender emailSender;
     @Override
     public ResponseEntity createGroup(GroupDTO request) {
         try {
@@ -98,11 +103,15 @@ public class GroupServiceImpl implements GroupService {
     public ResponseEntity invite(groupUserRelationDTO request) {
         Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
         Integer requestUserId = userRepository.findByUserEmail(SecurityUtil.getCurrentUserEmail()).getUserId();
-
         if (!requestUserId.equals(groupOptional.get().getGroupAdmin())) {
             return new ResponseEntity<CommonResponse>(new CommonResponse(false, "only group admin can invite user"), HttpStatus.UNAUTHORIZED);
         }
         GroupInvite groupInvite = new GroupInvite(request.getGroupId(), request.getUserId());
+//        SimpleMailMessage inviteMail = new SimpleMailMessage();
+//        inviteMail.setSubject("pens' invite Request");
+//        inviteMail.setTo(userRepository.findById(request.getUserId()).toString());
+//        inviteMail.setText(groupInvite.getAcceptString());
+//        emailSender.send(inviteMail);
         inviteRedisRepository.save(groupInvite);
         return new ResponseEntity<CommonResponse>(new CommonResponse(true, "invite success"), HttpStatus.OK);
     }
