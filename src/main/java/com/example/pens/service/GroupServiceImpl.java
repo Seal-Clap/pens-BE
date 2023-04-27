@@ -125,7 +125,12 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ResponseEntity acceptInvite(String acceptString) {
-        return null;
+        try {
+            GroupInvite groupInvite = inviteRedisRepository.findById(acceptString).get();
+            addUserToGroup(new groupUserRelationDTO(userRepository.findByUserEmail(groupInvite.getUser_email()).getUserId(), groupInvite.getGroup_id()));
+            return new ResponseEntity<CommonResponse>(new CommonResponse(true, "invite success"), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<CommonResponse>(new CommonResponse(false, "invite failed"), HttpStatus.FORBIDDEN);
+        }
     }
-
 }
