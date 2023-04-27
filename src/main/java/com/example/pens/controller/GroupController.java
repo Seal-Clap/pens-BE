@@ -36,8 +36,8 @@ public class GroupController {
     }
 
     @PostMapping("/invite")
-    public ResponseEntity invite(@RequestBody groupUserRelationDTO request) {
-        return groupService.invite(request);
+    public ResponseEntity invite(@RequestBody Map<String, String> map) {
+        return groupService.invite(map.get("groupId"), map.get("userEmail"));
     }
 
     @PostMapping("/accept-invite")

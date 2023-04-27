@@ -15,7 +15,7 @@ public interface GroupService {
 
     ResponseEntity getUsersInGroup(GroupDTO request);
 
-    ResponseEntity invite(groupUserRelationDTO request);
+    ResponseEntity invite(String groupId, String userEmail);
 
     ResponseEntity acceptInvite(String acceptString);
 }

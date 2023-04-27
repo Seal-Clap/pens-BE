@@ -105,18 +105,19 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public ResponseEntity invite(groupUserRelationDTO request) {
-        Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
+    public ResponseEntity invite(String groupId, String userEmail) {
+        Integer groupIdRequest = Integer.parseInt(groupId);
+        Optional<Group> groupOptional = groupRepository.findById(groupIdRequest);
         Integer requestUserId = userRepository.findByUserEmail(SecurityUtil.getCurrentUserEmail()).getUserId();
         if (!requestUserId.equals(groupOptional.get().getGroupAdminUser().getUserId())) {
             return new ResponseEntity<CommonResponse>(new CommonResponse(false, "only group admin can invite user"), HttpStatus.UNAUTHORIZED);
         }
-        GroupInvite groupInvite = new GroupInvite(request.getGroupId(), request.getUserId());
+        GroupInvite groupInvite = new GroupInvite(groupIdRequest, userEmail);
         SimpleMailMessage inviteMail = new SimpleMailMessage();
         inviteMail.setSubject("[pens'] "+ groupOptional.get().getGroupName() + " group invite Request");
-//        inviteMail.setTo(userRepository.findById(request.getUserId()).toString());
         // TODO mail text remote server 로 변경
-        inviteMail.setText("http://localhost:8080/group/accept-invite/" + groupInvite.getAcceptString());
+        inviteMail.setTo(userEmail);
+        inviteMail.setText("http://localhost:8080/group/accept-invite/" + groupInvite.getId());
         javaMailSender.send(inviteMail);
         inviteRedisRepository.save(groupInvite);
         return new ResponseEntity<CommonResponse>(new CommonResponse(true, "invite success"), HttpStatus.OK);

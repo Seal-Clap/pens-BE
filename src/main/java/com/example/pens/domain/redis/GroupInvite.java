@@ -19,16 +19,14 @@ public class GroupInvite {
     @Id
     private String id;
     private Integer group_id;
-    private Integer user_id;
-    @Indexed
-    private String acceptString;
+    private String user_email;
     private LocalDateTime createdAt;
 
     @Builder
-    public GroupInvite(Integer group_id, Integer user_id) {
-        this.acceptString = Base64.getEncoder().encodeToString((group_id + "stringification" + user_id).getBytes(StandardCharsets.UTF_8));
+    public GroupInvite(Integer group_id, String user_email) {
+        this.id = Base64.getEncoder().encodeToString((group_id + "stringification" + user_email).getBytes(StandardCharsets.UTF_8));
         this.group_id = group_id;
-        this.user_id = user_id;
+        this.user_email = user_email;
         this.createdAt = LocalDateTime.now();
     }
 }
