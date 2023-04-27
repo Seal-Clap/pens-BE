@@ -1,6 +1,7 @@
 package com.example.pens.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;
@@ -24,7 +25,8 @@ public class Group {
     @Column(nullable = false, length = 30)
     private String groupName;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JsonBackReference
     @JoinColumn(name="user_id")
     private User groupAdminUser;
 
