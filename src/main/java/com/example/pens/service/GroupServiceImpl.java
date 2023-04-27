@@ -13,11 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,7 +31,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final InviteRedisRepository inviteRedisRepository;
-//    private final JavaMailSender emailSender;
+    private final JavaMailSender javaMailSender;
     @Override
     public ResponseEntity createGroup(GroupDTO request) {
         Optional<User> userOptional = userRepository.findById(request.getGroupAdminUserId());
@@ -105,15 +108,16 @@ public class GroupServiceImpl implements GroupService {
     public ResponseEntity invite(groupUserRelationDTO request) {
         Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
         Integer requestUserId = userRepository.findByUserEmail(SecurityUtil.getCurrentUserEmail()).getUserId();
-        if (!requestUserId.equals(groupOptional.get().getGroupAdmin())) {
+        if (!requestUserId.equals(groupOptional.get().getGroupAdminUser().getUserId())) {
             return new ResponseEntity<CommonResponse>(new CommonResponse(false, "only group admin can invite user"), HttpStatus.UNAUTHORIZED);
         }
         GroupInvite groupInvite = new GroupInvite(request.getGroupId(), request.getUserId());
-//        SimpleMailMessage inviteMail = new SimpleMailMessage();
-//        inviteMail.setSubject("pens' invite Request");
+        SimpleMailMessage inviteMail = new SimpleMailMessage();
+        inviteMail.setSubject("[pens'] "+ groupOptional.get().getGroupName() + " group invite Request");
 //        inviteMail.setTo(userRepository.findById(request.getUserId()).toString());
-//        inviteMail.setText(groupInvite.getAcceptString());
-//        emailSender.send(inviteMail);
+        // TODO mail text remote server 로 변경
+        inviteMail.setText("http://localhost:8080/group/accept-invite/" + groupInvite.getAcceptString());
+        javaMailSender.send(inviteMail);
         inviteRedisRepository.save(groupInvite);
         return new ResponseEntity<CommonResponse>(new CommonResponse(true, "invite success"), HttpStatus.OK);
     }
