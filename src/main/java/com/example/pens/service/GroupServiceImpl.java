@@ -31,11 +31,13 @@ public class GroupServiceImpl implements GroupService {
 //    private final JavaMailSender emailSender;
     @Override
     public ResponseEntity createGroup(GroupDTO request) {
+        Optional<User> userOptional = userRepository.findById(request.getGroupAdminUserId());
         try {
+            User user = userOptional.get();
             groupRepository.save(
                     Group.builder()
                             .groupName(request.getGroupName())
-                            .groupAdmin(request.getGroupAdmin())
+                            .groupAdminUser(user)
                             .build()
             );
             return new ResponseEntity(new CommonResponse(true, "group create success"), HttpStatus.CREATED);
