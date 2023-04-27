@@ -1,5 +1,6 @@
 package com.example.pens.domain.request;
 
+import com.example.pens.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class GroupDTO {
     private int groupId;
     private String groupName;
-    private String groupAdmin;
+    private int groupAdminUserId;
 }

@@ -24,10 +24,11 @@ public class Group {
     @Column(nullable = false, length = 30)
     private String groupName;
 
-    @Column(nullable = false, length = 50)
-    private String groupAdmin;
+    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name="user_id")
+    private User groupAdminUser;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     @JsonBackReference
     @JoinTable(
             name = "group_user_relation",
