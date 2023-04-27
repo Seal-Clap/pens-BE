@@ -3,6 +3,7 @@ package com.example.pens.domain;
 
 
 import com.example.pens.domain.auth.Authority;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;

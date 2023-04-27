@@ -1,13 +1,11 @@
 package com.example.pens.controller;
 
-import com.example.pens.domain.request.groupUserRelationDTO;
+import com.example.pens.domain.request.GroupUserRelationDTO;
 import com.example.pens.domain.request.GroupDTO;
 import com.example.pens.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,13 +18,16 @@ public class GroupController {
         return groupService.createGroup(request);
     }
 
+    @PostMapping("/delete")
+    public ResponseEntity deleteGroup(@RequestBody GroupUserRelationDTO request) { return groupService.deleteGroup(request); }
+
     @PostMapping("/add-user")
-    public ResponseEntity addUser(@RequestBody groupUserRelationDTO request) {
+    public ResponseEntity addUser(@RequestBody GroupUserRelationDTO request) {
         return groupService.addUserToGroup(request);
     }
 
     @PostMapping("/delete-user")
-    public ResponseEntity deleteUser(@RequestBody groupUserRelationDTO request) {
+    public ResponseEntity deleteUser(@RequestBody GroupUserRelationDTO request) {
         return groupService.deleteUser(request);
     }
 
@@ -36,7 +37,7 @@ public class GroupController {
     }
 
     @PostMapping("/invite")
-    public ResponseEntity invite(@RequestBody groupUserRelationDTO request) {
+    public ResponseEntity invite(@RequestBody GroupUserRelationDTO request) {
         return groupService.invite(request);
     }
 
