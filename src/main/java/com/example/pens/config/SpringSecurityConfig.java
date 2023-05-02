@@ -44,7 +44,7 @@ public class SpringSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/images/**", "/users/login", "/users/register", "/users/groups", "/group/**").permitAll()
+                .requestMatchers("/images/**", "/users/login", "/users/register", "/group/**", "/test").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtSecurityConfig(jwtTokenProvider))
