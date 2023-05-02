@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+import java.util.Set;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/group")
@@ -37,12 +40,12 @@ public class GroupController {
     }
 
     @PostMapping("/invite")
-    public ResponseEntity invite(@RequestBody GroupUserRelationDTO request) {
-        return groupService.invite(request);
+    public ResponseEntity invite(@RequestBody Map<String, String> map) {
+        return groupService.invite(map.get("groupId"), map.get("userEmail"));
     }
 
-    @PostMapping("/accept-invite")
-    public ResponseEntity acceptInvite(@RequestParam("acceptString") String acceptString) {
+    @GetMapping("/accept-invite/{acceptString}")
+    public ResponseEntity acceptInvite(@PathVariable("acceptString") String acceptString) {
         return groupService.acceptInvite(acceptString);
     }
 
