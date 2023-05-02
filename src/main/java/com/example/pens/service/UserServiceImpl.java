@@ -1,7 +1,9 @@
 package com.example.pens.service;
 
 import com.example.pens.domain.CommonResponse;
+import com.example.pens.domain.Group;
 import com.example.pens.domain.User;
+import com.example.pens.domain.UsersResponse;
 import com.example.pens.domain.auth.Authority;
 import com.example.pens.domain.request.UserDTO;
 import com.example.pens.jwt.JwtFilter;
@@ -22,8 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -100,5 +101,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity identify() {
         return new ResponseEntity(userRepository.findByUserEmail(SecurityUtil.getCurrentUserEmail()).getUserId(), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity getGroups(UserDTO request) {
+        Optional<User> userOptional = userRepository.findById(request.getUserId());
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            Set<Group> groups = user.getGroups();
+            return new ResponseEntity(List.copyOf(groups), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new CommonResponse(false, "fail"), HttpStatus.BAD_REQUEST);
+        }
     }
 }

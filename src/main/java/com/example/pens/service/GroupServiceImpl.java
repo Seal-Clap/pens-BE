@@ -3,21 +3,22 @@ package com.example.pens.service;
 import com.example.pens.domain.*;
 import com.example.pens.domain.redis.GroupInvite;
 import com.example.pens.domain.request.GroupDTO;
-import com.example.pens.domain.request.groupUserRelationDTO;
+import com.example.pens.domain.request.GroupUserRelationDTO;
 import com.example.pens.repository.GroupRepository;
 import com.example.pens.repository.UserRepository;
 import com.example.pens.repository.redis.InviteRedisRepository;
 import com.example.pens.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Date;
@@ -36,7 +37,12 @@ public class GroupServiceImpl implements GroupService {
     public ResponseEntity createGroup(GroupDTO request) {
         Optional<User> userOptional = userRepository.findById(request.getGroupAdminUserId());
         try {
-            User user = userOptional.get();
+            User user;
+            if (userOptional.isPresent())
+                user = userOptional.get();
+            else
+                return new ResponseEntity(new CommonResponse(false, "User not found"), HttpStatus.NOT_FOUND);
+
             groupRepository.save(
                     Group.builder()
                             .groupName(request.getGroupName())
@@ -45,12 +51,27 @@ public class GroupServiceImpl implements GroupService {
             );
             return new ResponseEntity(new CommonResponse(true, "group create success"), HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
-    public ResponseEntity addUserToGroup(groupUserRelationDTO request) {
+    public ResponseEntity deleteGroup(GroupUserRelationDTO request) {
+        Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
+        try {
+            Group group = groupOptional.get();
+            if(group.getGroupAdminUser().getUserId() != request.getUserId())
+                return new ResponseEntity<CommonResponse>(new CommonResponse(false, "only group admin can delete group"), HttpStatus.UNAUTHORIZED);
+            groupRepository.delete(group);
+            return new ResponseEntity(new CommonResponse(true, "group delete success"), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity addUserToGroup(GroupUserRelationDTO request) {
         System.out.println("debug -> groupid:"+request.getGroupId()+ " and userid:" +request.getUserId());
         Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
         Optional<User> userOptional = userRepository.findById(request.getUserId());
@@ -71,7 +92,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public ResponseEntity deleteUser(groupUserRelationDTO request) {
+    public ResponseEntity deleteUser(GroupUserRelationDTO request) {
         System.out.println("debug -> groupid:"+request.getGroupId()+ " and userid:" +request.getUserId());
         Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
         Optional<User> userOptional = userRepository.findById(request.getUserId());
@@ -133,4 +154,19 @@ public class GroupServiceImpl implements GroupService {
             return new ResponseEntity<CommonResponse>(new CommonResponse(false, "invite failed"), HttpStatus.FORBIDDEN);
         }
     }
+
+    @Override
+    public ResponseEntity checkIsAdmin(GroupUserRelationDTO request) {
+        Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
+        try {
+            Group group = groupOptional.get();
+            if(group.getGroupAdminUser().getUserId() == request.getUserId())
+                return new ResponseEntity<CommonResponse>(new CommonResponse(true, "admin true"), HttpStatus.OK);
+            else
+                return new ResponseEntity<CommonResponse>(new CommonResponse(false, "admin false"), HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity(new CommonResponse(false, "error occur"), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

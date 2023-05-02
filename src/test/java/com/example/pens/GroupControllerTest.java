@@ -51,7 +51,7 @@ public class GroupControllerTest {
         // Create a test group and add users
         Group group = new Group();
         group.setGroupName("Test Group");
-        group.setGroupAdmin("testadmin@example.com");
+        group.setGroupAdminUser(user1);
         group.setUsers(Set.of(user1, user2));
 
         group = groupRepository.save(group);

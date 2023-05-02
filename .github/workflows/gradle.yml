@@ -13,10 +13,10 @@ on:
 
 # 해당 코드에서 사용될 변수 설정
 env:
-  PROJECT_NAME: pens-server-temp
-  BUCKET_NAME: sealclap-test
-  CODE_DEPLOY_APP_NAME: codedeploytest
-  DEPLOYMENT_GROUP_NAME: group-name
+  PROJECT_NAME: pens-server
+  BUCKET_NAME: team39-s3bucket
+  CODE_DEPLOY_APP_NAME: team39-codeDeploy
+  DEPLOYMENT_GROUP_NAME: team39-codeDeployGroup
 
 jobs:
   build:
