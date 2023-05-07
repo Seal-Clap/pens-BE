@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,17 +31,20 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public ResponseEntity createGroup(GroupDTO request) {
         Optional<User> userOptional = userRepository.findById(request.getGroupAdminUserId());
+        Set<User> users = new HashSet<>();
+
         try {
             User user;
             if (userOptional.isPresent())
                 user = userOptional.get();
             else
                 return new ResponseEntity(new CommonResponse(false, "User not found"), HttpStatus.NOT_FOUND);
-
+            users.add(user);
             groupRepository.save(
                     Group.builder()
                             .groupName(request.getGroupName())
                             .groupAdminUser(user)
+                            .users(users)
                             .build()
             );
             return new ResponseEntity(new CommonResponse(true, "group create success"), HttpStatus.CREATED);
