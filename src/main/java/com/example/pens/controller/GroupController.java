@@ -35,8 +35,8 @@ public class GroupController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity getUsers(@RequestBody GroupDTO request) {
-        return groupService.getUsersInGroup(request);
+    public ResponseEntity getUsers(@RequestParam Integer groupId) {
+        return groupService.getUsersInGroup(groupId);
     }
 
     @PostMapping("/invite")
@@ -50,5 +50,5 @@ public class GroupController {
     }
 
     @GetMapping("/isAdmin")
-    public ResponseEntity checkIsAdmin(@RequestBody GroupUserRelationDTO request) { return groupService.checkIsAdmin(request); }
+    public ResponseEntity checkIsAdmin(@RequestParam Integer groupId, @RequestParam Integer userId) { return groupService.checkIsAdmin(groupId, userId); }
 }
