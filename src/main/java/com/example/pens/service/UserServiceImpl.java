@@ -104,8 +104,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity getGroups(UserDTO request) {
-        Optional<User> userOptional = userRepository.findById(request.getUserId());
+    public ResponseEntity getGroups(Integer userId) {
+        Optional<User> userOptional = userRepository.findById(userId.intValue());
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();

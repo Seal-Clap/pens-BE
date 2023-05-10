@@ -8,5 +8,5 @@ public interface UserService {
     ResponseEntity login(UserDTO userRequest);
     ResponseEntity identify();
 
-    ResponseEntity getGroups(UserDTO request);
+    ResponseEntity getGroups(Integer userId);
 }

@@ -27,5 +27,5 @@ public class UsersController {
     public ResponseEntity identify() { return userService.identify(); }
 
     @GetMapping("/groups")
-    public ResponseEntity getGroups(@RequestBody UserDTO request) { return userService.getGroups(request); }
+    public ResponseEntity getGroups(@RequestParam Integer userId) { return userService.getGroups(userId); }
 }
