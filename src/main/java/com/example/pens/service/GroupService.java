@@ -13,11 +13,11 @@ public interface GroupService {
 
     ResponseEntity deleteUser(GroupUserRelationDTO request);
 
-    ResponseEntity getUsersInGroup(GroupDTO request);
+    ResponseEntity getUsersInGroup(Integer groupId);
 
     ResponseEntity invite(String groupId, String userEmail);
 
     ResponseEntity acceptInvite(String acceptString);
 
-    ResponseEntity checkIsAdmin(GroupUserRelationDTO request);
+    ResponseEntity checkIsAdmin(Integer groupId, Integer userId);
 }

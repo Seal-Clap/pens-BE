@@ -111,8 +111,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public ResponseEntity getUsersInGroup(GroupDTO request) {
-        Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
+    public ResponseEntity getUsersInGroup(Integer groupId) {
+        Optional<Group> groupOptional = groupRepository.findById(groupId);
 
         if (groupOptional.isPresent()) {
             Group group = groupOptional.get();
@@ -155,11 +155,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public ResponseEntity checkIsAdmin(GroupUserRelationDTO request) {
-        Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
+    public ResponseEntity checkIsAdmin(Integer groupId, Integer userId) {
+        Optional<Group> groupOptional = groupRepository.findById(groupId);
         try {
             Group group = groupOptional.get();
-            if(group.getGroupAdminUser().getUserId() == request.getUserId())
+            if(group.getGroupAdminUser().getUserId() == userId)
                 return new ResponseEntity<CommonResponse>(new CommonResponse(true, "admin true"), HttpStatus.OK);
             else
                 return new ResponseEntity<CommonResponse>(new CommonResponse(false, "admin false"), HttpStatus.UNAUTHORIZED);
