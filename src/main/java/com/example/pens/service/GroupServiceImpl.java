@@ -127,10 +127,10 @@ public class GroupServiceImpl implements GroupService {
     public ResponseEntity invite(String groupId, String userEmail) {
         Integer groupIdRequest = Integer.parseInt(groupId);
         Optional<Group> groupOptional = groupRepository.findById(groupIdRequest);
-        Integer requestUserId = userRepository.findByUserEmail(SecurityUtil.getCurrentUserEmail()).getUserId();
-        if (!requestUserId.equals(groupOptional.get().getGroupAdminUser().getUserId())) {
-            return new ResponseEntity<CommonResponse>(new CommonResponse(false, "only group admin can invite user"), HttpStatus.UNAUTHORIZED);
-        }
+//        Integer requestUserId = userRepository.findByUserEmail(SecurityUtil.getCurrentUserEmail()).getUserId();
+//        if (!requestUserId.equals(groupOptional.get().getGroupAdminUser().getUserId())) {
+//            return new ResponseEntity<CommonResponse>(new CommonResponse(false, "only group admin can invite user"), HttpStatus.UNAUTHORIZED);
+//        }
         GroupInvite groupInvite = new GroupInvite(groupIdRequest, userEmail);
         SimpleMailMessage inviteMail = new SimpleMailMessage();
         inviteMail.setSubject("[pens'] "+ groupOptional.get().getGroupName() + " group invite Request");
