@@ -1,8 +1,9 @@
 package com.example.pens.domain.websocket;
 
 import com.example.pens.domain.Group;
-import jakarta.persistence.*;
 
+
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,11 @@ public class VoiceChannel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer channelId;
-
-    @Id
+    
     @ManyToOne(targetEntity = Group.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "groupId")
     private Integer groupId;
+
+    private String channelName;
 
 }
