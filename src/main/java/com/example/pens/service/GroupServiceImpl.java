@@ -131,11 +131,6 @@ public class GroupServiceImpl implements GroupService {
 //        if (!requestUserId.equals(groupOptional.get().getGroupAdminUser().getUserId())) {
 //            return new ResponseEntity<CommonResponse>(new CommonResponse(false, "only group admin can invite user"), HttpStatus.UNAUTHORIZED);
 //        }
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.debug", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.EnableSSL.enable", "true");
         GroupInvite groupInvite = new GroupInvite(groupIdRequest, userEmail);
         SimpleMailMessage inviteMail = new SimpleMailMessage();
         inviteMail.setSubject("[pens'] "+ groupOptional.get().getGroupName() + " group invite Request");
