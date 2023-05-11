@@ -17,7 +17,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/channels")
 public class VoiceChannelController {
-    private VoiceChannelService voiceChannelService;
+    private final VoiceChannelService voiceChannelService;
+
     @PostMapping
     public ResponseEntity createChannel(@RequestBody Map<String, Any> map) {
         return voiceChannelService.create(map);
