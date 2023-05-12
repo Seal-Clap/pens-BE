@@ -2,14 +2,14 @@ package com.example.pens.service;
 
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
 import com.example.pens.domain.CommonResponse;
+import com.example.pens.domain.GroupFile;
+import com.example.pens.repository.GroupFileRepository;
 import com.example.pens.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
@@ -29,7 +27,7 @@ import java.net.URLEncoder;
 @Service
 public class AwsS3Service {
     private final AmazonS3 amazonS3Client;
-
+    private final GroupFileRepository groupFileRepository;
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
@@ -46,6 +44,7 @@ public class AwsS3Service {
         try (InputStream inputStream = multipartFile.getInputStream()) {
             amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
+            groupFileRepository.save(GroupFile.builder().fileName(multipartFile.getOriginalFilename()).groupId(groupId).build());
         } catch (IOException e) {
             return new ResponseEntity(new CommonResponse(false, "File Upload Failed"), HttpStatus.FORBIDDEN);
         }
