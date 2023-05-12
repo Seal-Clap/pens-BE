@@ -22,6 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -72,6 +77,16 @@ public class AwsS3Service {
 
 
     public ResponseEntity getFileList(Integer groupId) {
-        return null;
+        List<GroupFile> groupFiles = groupFileRepository.findGroupFileByGroup(groupRepository.getById(groupId));
+
+        List<Map<String, Object>> groupFileMaps = groupFiles.stream()
+                .map(groupFile -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("fileId", groupFile.getFileId());
+                    map.put("fileName", groupFile.getFileName());
+                    return map;
+                })
+                .collect(Collectors.toList());
+        return new ResponseEntity(groupFileMaps, HttpStatus.OK);
     }
 }
