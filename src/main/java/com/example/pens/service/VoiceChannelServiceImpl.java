@@ -2,6 +2,7 @@ package com.example.pens.service;
 
 import com.example.pens.domain.CommonResponse;
 import com.example.pens.domain.websocket.VoiceChannel;
+import com.example.pens.repository.GroupRepository;
 import com.example.pens.repository.VoiceChannelRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Any;
@@ -15,12 +16,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class VoiceChannelServiceImpl implements VoiceChannelService {
     private final VoiceChannelRepository voiceChannelRepository;
+    private final GroupRepository groupRepository;
     @Override
     public ResponseEntity create(Map<String, Any> map) {
         try {
             String channelName = map.get("channelName").toString();
             Integer groupId =  Integer.parseInt(map.get("groupId").toString());
-            voiceChannelRepository.save(VoiceChannel.builder().channelName(channelName).groupId(groupId).build());
+            voiceChannelRepository.save(VoiceChannel.builder().channelName(channelName).group(groupRepository.getReferenceById(groupId)).build());
             return new ResponseEntity(new CommonResponse(true, "voice channel create success"), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new CommonResponse(false, "voice channel create fail"), HttpStatus.FORBIDDEN);

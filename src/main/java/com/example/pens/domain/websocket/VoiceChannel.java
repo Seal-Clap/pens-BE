@@ -23,7 +23,7 @@ public class VoiceChannel {
 
     @ManyToOne(targetEntity = Group.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "groupId")
-    private Integer groupId;
+    private Group group;
 
     private String channelName;
 }

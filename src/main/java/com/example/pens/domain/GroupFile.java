@@ -16,9 +16,9 @@ public class GroupFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int fileId;
 
-    @ManyToOne(targetEntity = Group.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Group.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
-    private int groupId;
+    private Group group;
 
     @Column
     private String fileName;

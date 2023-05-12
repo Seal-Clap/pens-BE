@@ -7,6 +7,7 @@ import com.amazonaws.util.IOUtils;
 import com.example.pens.domain.CommonResponse;
 import com.example.pens.domain.GroupFile;
 import com.example.pens.repository.GroupFileRepository;
+import com.example.pens.repository.GroupRepository;
 import com.example.pens.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ import java.net.URLEncoder;
 public class AwsS3Service {
     private final AmazonS3 amazonS3Client;
     private final GroupFileRepository groupFileRepository;
+    private final GroupRepository groupRepository;
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
@@ -44,7 +46,8 @@ public class AwsS3Service {
         try (InputStream inputStream = multipartFile.getInputStream()) {
             amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
-            groupFileRepository.save(GroupFile.builder().fileName(multipartFile.getOriginalFilename()).groupId(groupId).build());
+            GroupFile groupFile = GroupFile.builder().fileName(multipartFile.getOriginalFilename()).group(groupRepository.getReferenceById(groupId)).build();
+            groupFileRepository.save(groupFile);
         } catch (IOException e) {
             return new ResponseEntity(new CommonResponse(false, "File Upload Failed"), HttpStatus.FORBIDDEN);
         }
@@ -68,4 +71,7 @@ public class AwsS3Service {
     }
 
 
+    public ResponseEntity getFileList(Integer groupId) {
+        return null;
+    }
 }
