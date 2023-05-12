@@ -117,7 +117,7 @@ public class GroupServiceImpl implements GroupService {
         if (groupOptional.isPresent()) {
             Group group = groupOptional.get();
             Set<User> users = group.getUsers();
-            return new ResponseEntity(new UsersResponse(List.copyOf(users)), HttpStatus.OK);
+            return new ResponseEntity(List.copyOf(users), HttpStatus.OK);
         } else {
             return new ResponseEntity(new CommonResponse(false, "no group"), HttpStatus.BAD_REQUEST);
         }
