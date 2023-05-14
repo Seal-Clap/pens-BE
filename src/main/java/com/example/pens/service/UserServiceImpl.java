@@ -3,7 +3,6 @@ package com.example.pens.service;
 import com.example.pens.domain.CommonResponse;
 import com.example.pens.domain.Group;
 import com.example.pens.domain.User;
-import com.example.pens.domain.UsersResponse;
 import com.example.pens.domain.auth.Authority;
 import com.example.pens.domain.request.UserDTO;
 import com.example.pens.jwt.JwtFilter;

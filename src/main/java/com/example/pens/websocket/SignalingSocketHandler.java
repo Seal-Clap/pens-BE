@@ -4,11 +4,14 @@ import com.example.pens.domain.websocket.SignalMessage;
 import com.example.pens.util.WebSocketUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,21 +21,26 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
     private static final String TYPE_INIT = "init";
     private static final String TYPE_LOGOUT = "logout";
 
-    /**
-     * Cache of sessions by users.
-     */
-    private final Map<String, WebSocketSession> connectedUsers = new HashMap<>();
+    //세션 구조 -> Map[ roomId, Map[sessionId, sessionObject] ]
+    private final Map<String, Map<String, WebSocketSession>> roomSessions = new HashMap<>();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         LOG.info("[" + session.getId() + "] Connection established " + session.getId());
 
-        // send the message to all other peers, that new men its being registered
+        //roomId 추출 from uri
+        URI uri = session.getUri();
+        MultiValueMap<String,String> parameters = UriComponentsBuilder.fromUri(uri).build().getQueryParams();
+        String roomId = parameters.getFirst("roomId");
+        if (!roomSessions.containsKey(roomId)) {
+            roomSessions.put(roomId, new HashMap<>());
+        }
+
         final SignalMessage newMenOnBoard = new SignalMessage();
         newMenOnBoard.setType(TYPE_INIT);
         newMenOnBoard.setSender(session.getId());
 
-        connectedUsers.values().forEach(webSocketSession -> {
+        roomSessions.get(roomId).values().forEach(webSocketSession -> {
             try {
                 webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(newMenOnBoard)));
             } catch (Exception e) {
@@ -40,8 +48,7 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
             }
         });
 
-        // put the session to the "cache".
-        connectedUsers.put(session.getId(), session);
+        roomSessions.get(roomId).put(session.getId(), session);
     }
 
     @Override
@@ -61,10 +68,13 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
         LOG.info("handleTextMessage : {}", message.getPayload());
 
         SignalMessage signalMessage = WebSocketUtil.getObject(message.getPayload());
-
         // with the destinationUser find the targeted socket, if any
         String destinationUser = signalMessage.getReceiver();
-        WebSocketSession destSocket = connectedUsers.get(destinationUser);
+        String roomId = signalMessage.getRoomId();
+
+        //방 내부 dest user에게 보내는 코드
+        /*
+        WebSocketSession destSocket = roomSessions.get(roomId).get(destinationUser);
         // if the socket exists and is open, we go on
         if (destSocket != null && destSocket.isOpen()) {
             // set the sender as current sessionId.
@@ -73,18 +83,41 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
             LOG.info("send message {} to {}", resendingMessage, destinationUser);
             destSocket.sendMessage(new TextMessage(resendingMessage));
         }
+         */
+
+        // 같은 room에 모두 전송 (자신 제외)
+        roomSessions.get(roomId).values().forEach(
+                webSocketSession -> {
+                    try {
+                        if(!webSocketSession.equals(session))
+                            webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(signalMessage)));
+                    } catch (Exception e) {
+                        LOG.warn("Error while message sending.", e);
+                    }
+                }
+        );
     }
 
     private void removeUserAndSendLogout(final String sessionId) {
 
-        connectedUsers.remove(sessionId);
+        String roomToRemove = null;
+        for (Map.Entry<String, Map<String, WebSocketSession>> roomEntry : roomSessions.entrySet()) {
+            if (roomEntry.getValue().containsKey(sessionId)) {
+                roomToRemove = roomEntry.getKey();
+                break;
+            }
+        }
+
+        if (roomToRemove != null) {
+            roomSessions.get(roomToRemove).remove(sessionId);
+        }
 
         // send the message to all other peers, somebody(sessionId) leave.
         final SignalMessage menOut = new SignalMessage();
         menOut.setType(TYPE_LOGOUT);
         menOut.setSender(sessionId);
 
-        connectedUsers.values().forEach(webSocket -> {
+        roomSessions.get(roomToRemove).values().forEach(webSocket -> {
             try {
                 webSocket.sendMessage(new TextMessage(WebSocketUtil.getString(menOut)));
             } catch (Exception e) {
