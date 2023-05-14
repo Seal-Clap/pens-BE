@@ -28,6 +28,11 @@ public class FileController {
         return awsS3Service.downloadFile(originalFilePath);
     }
 
+    @GetMapping("/download")
+    public ResponseEntity<byte[]> downloadFile(@RequestParam("fileId") Integer fileId) throws IOException {
+        return awsS3Service.downloadFile(fileId);
+    }
+
     @GetMapping
     public ResponseEntity getFileList(@RequestParam("groupId") Integer groupId) {
         return awsS3Service.getFileList(groupId);
