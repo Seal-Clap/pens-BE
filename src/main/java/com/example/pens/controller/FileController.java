@@ -38,6 +38,13 @@ public class FileController {
         return awsS3Service.getFileList(groupId);
     }
 
+    @GetMapping("/info")
+    public ResponseEntity getFileInfo(@RequestParam("fileId") Integer fileId) {
+        return null;
+    }
+
+    public 
+
     private HttpHeaders buildHeaders(String resourcePath, byte[] data) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentLength(data.length);
