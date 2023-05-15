@@ -13,5 +13,5 @@ public class SignalMessage {
     private String sender;
     private String receiver;
     private String roomId;
-    private Object data;
+    private String data;
 }
