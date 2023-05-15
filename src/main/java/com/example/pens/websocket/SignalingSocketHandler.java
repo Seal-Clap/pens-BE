@@ -39,6 +39,7 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
         final SignalMessage newMenOnBoard = new SignalMessage();
         newMenOnBoard.setType(TYPE_INIT);
         newMenOnBoard.setSender(session.getId());
+        newMenOnBoard.setRoomId(roomId);
 
         roomSessions.get(roomId).values().forEach(webSocketSession -> {
             try {
@@ -71,6 +72,7 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
         // with the destinationUser find the targeted socket, if any
         String destinationUser = signalMessage.getReceiver();
         String roomId = signalMessage.getRoomId();
+        signalMessage.setSender(session.getId());
 
         //방 내부 dest user에게 보내는 코드
         /*
