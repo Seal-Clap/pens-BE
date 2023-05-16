@@ -3,6 +3,7 @@ package com.example.pens.domain.websocket;
 import com.example.pens.domain.Group;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class VoiceChannel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer channelId;
 
+    @JsonProperty("groupId")
     @ManyToOne(targetEntity = Group.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "groupId")
     private Group group;
