@@ -28,8 +28,8 @@ public class FileController {
         return awsS3Service.downloadFile(originalFilePath);
     }
 
-    @GetMapping("/download")
-    public ResponseEntity<byte[]> downloadFile(@RequestParam("fileId") Integer fileId) throws IOException {
+    @GetMapping("/download/{fileId}")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable("fileId") Integer fileId) throws IOException {
         return awsS3Service.downloadFile(fileId);
     }
 
@@ -42,8 +42,6 @@ public class FileController {
     public ResponseEntity getFileInfo(@RequestParam("fileId") Integer fileId) {
         return null;
     }
-
-    public 
 
     private HttpHeaders buildHeaders(String resourcePath, byte[] data) {
         HttpHeaders headers = new HttpHeaders();
