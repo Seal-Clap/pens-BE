@@ -75,6 +75,12 @@ public class AwsS3Service {
 
     }
 
+    public ResponseEntity<byte[]> downloadFile(Integer fileId) throws IOException {
+        GroupFile groupFile = groupFileRepository.getReferenceById(fileId);
+        String resourcePath = FileUtil.buildFileName(groupFile.getGroup().getGroupId(), groupFile.getFileName());
+        return downloadFile(resourcePath);
+    }
+
 
     public ResponseEntity getFileList(Integer groupId) {
         List<GroupFile> groupFiles = groupFileRepository.findGroupFileByGroup(groupRepository.getById(groupId));
