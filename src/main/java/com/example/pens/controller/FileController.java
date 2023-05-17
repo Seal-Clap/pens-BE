@@ -34,7 +34,7 @@ public class FileController {
     }
 
     @GetMapping
-    public ResponseEntity getFileList(@RequestParam("groupId") Integer groupId) {
+    public ResponseEntity getFileList(@RequestParam(value = "groupId") Integer groupId) {
         return awsS3Service.getFileList(groupId);
     }
 
