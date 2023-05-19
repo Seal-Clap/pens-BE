@@ -41,18 +41,18 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
             roomSessions.put(roomId, new HashMap<>());
         }
 
-        final SignalMessage newMenOnBoard = new SignalMessage();
-        newMenOnBoard.setType(TYPE_INIT);
-        newMenOnBoard.setSender(session.getId());
-        newMenOnBoard.setRoomId(roomId);
-
-        roomSessions.get(roomId).values().forEach(webSocketSession -> {
-            try {
-                webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(newMenOnBoard)));
-            } catch (Exception e) {
-                LOG.warn("Error while message sending.", e);
-            }
-        });
+//        final SignalMessage newMenOnBoard = new SignalMessage();
+//        newMenOnBoard.setType(TYPE_INIT);
+//        newMenOnBoard.setSender(session.getId());
+//        newMenOnBoard.setRoomId(roomId);
+//
+//        roomSessions.get(roomId).values().forEach(webSocketSession -> {
+//            try {
+//                webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(newMenOnBoard)));
+//            } catch (Exception e) {
+//                LOG.warn("Error while message sending.", e);
+//            }
+//        });
 
         roomSessions.get(roomId).put(session.getId(), session);
     }
@@ -69,6 +69,7 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
         removeUserAndSendLogout(session.getId());
     }
 
+    /*
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         LOG.info("handleTextMessage : {}", message.getPayload());
@@ -92,6 +93,7 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
                 }
         );
     }
+    */
 
     @Override
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
@@ -130,15 +132,11 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
             }
         }
 
-        if (roomToRemove != null) {
-            roomSessions.get(roomToRemove).remove(sessionId);
-        }
-
         // send the message to all other peers, somebody(sessionId) leave.
         final SignalMessage menOut = new SignalMessage();
         menOut.setType(TYPE_LOGOUT);
         menOut.setSender(sessionId);
-
+        
         roomSessions.get(roomToRemove).values().forEach(webSocket -> {
             try {
                 webSocket.sendMessage(new TextMessage(WebSocketUtil.getString(menOut)));
@@ -146,5 +144,9 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
                 LOG.warn("Error while message sending.", e);
             }
         });
+
+        if (roomToRemove != null) {
+            roomSessions.get(roomToRemove).remove(sessionId);
+        }
     }
 }
