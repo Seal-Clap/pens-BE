@@ -44,7 +44,7 @@ public class SpringSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/images/**", "/users/**", "/group/**", "/file/**", "/channels/**", "/test", "/room/**").permitAll()
+                .requestMatchers("/images/**", "/users/**", "/group/**", "/file/**", "/channels/**", "/test", "/room/**", "/ws/**", "ws/draw/**").permitAll()
 //                .anyRequest().authenticated()
                 .anyRequest().permitAll()
                 .and()
