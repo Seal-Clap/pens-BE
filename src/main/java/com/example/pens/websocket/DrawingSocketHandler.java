@@ -41,19 +41,6 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
             roomSessions.put(roomId, new HashMap<>());
         }
 
-//        final SignalMessage newMenOnBoard = new SignalMessage();
-//        newMenOnBoard.setType(TYPE_INIT);
-//        newMenOnBoard.setSender(session.getId());
-//        newMenOnBoard.setRoomId(roomId);
-//
-//        roomSessions.get(roomId).values().forEach(webSocketSession -> {
-//            try {
-//                webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(newMenOnBoard)));
-//            } catch (Exception e) {
-//                LOG.warn("Error while message sending.", e);
-//            }
-//        });
-
         roomSessions.get(roomId).put(session.getId(), session);
     }
 
@@ -69,32 +56,6 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
         removeUserAndSendLogout(session.getId());
     }
 
-    /*
-    @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        LOG.info("handleTextMessage : {}", message.getPayload());
-
-        SignalMessage signalMessage = WebSocketUtil.getObject(message.getPayload());
-        // with the destinationUser find the targeted socket, if any
-        //String destinationUser = signalMessage.getReceiver();
-        String roomId = signalMessage.getRoomId();
-        signalMessage.setSender(session.getId());
-
-        // 같은 room에 모두 전송 (자신 제외)
-        roomSessions.get(roomId).values().forEach(
-                webSocketSession -> {
-                    try {
-                        if(!webSocketSession.equals(session)) {
-                            webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(signalMessage)));
-                        }
-                    } catch (Exception e) {
-                        LOG.warn("Error while message sending.", e);
-                    }
-                }
-        );
-    }
-    */
-
     @Override
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
         LOG.info("handleBinaryMessage from session: {}", session.getId());
@@ -108,17 +69,6 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
         // Retrieve the room ID from the session attributes or from the query string
         // (like you did in afterConnectionEstablished).
         String roomId = (String)session.getAttributes().get("roomId");
-
-        // Send the message to the other sessions in the room.
-        for (WebSocketSession webSocketSession : roomSessions.get(roomId).values()) {
-            try {
-                //if (!webSocketSession.equals(session)) {
-                webSocketSession.sendMessage(newMessage);
-                //}
-            }catch (Exception e) {
-                LOG.warn("Error while message sending.", e);
-            }
-        }
     }
 
 
@@ -131,19 +81,6 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
                 break;
             }
         }
-
-        // send the message to all other peers, somebody(sessionId) leave.
-        final SignalMessage menOut = new SignalMessage();
-        menOut.setType(TYPE_LOGOUT);
-        menOut.setSender(sessionId);
-        
-        roomSessions.get(roomToRemove).values().forEach(webSocket -> {
-            try {
-                webSocket.sendMessage(new TextMessage(WebSocketUtil.getString(menOut)));
-            } catch (Exception e) {
-                LOG.warn("Error while message sending.", e);
-            }
-        });
 
         if (roomToRemove != null) {
             roomSessions.get(roomToRemove).remove(sessionId);
