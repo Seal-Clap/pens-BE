@@ -108,17 +108,6 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
         // Retrieve the room ID from the session attributes or from the query string
         // (like you did in afterConnectionEstablished).
         String roomId = (String)session.getAttributes().get("roomId");
-
-        // Send the message to the other sessions in the room.
-        for (WebSocketSession webSocketSession : roomSessions.get(roomId).values()) {
-            try {
-                //if (!webSocketSession.equals(session)) {
-                webSocketSession.sendMessage(newMessage);
-                //}
-            }catch (Exception e) {
-                LOG.warn("Error while message sending.", e);
-            }
-        }
     }
 
 
@@ -135,18 +124,5 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
         if (roomToRemove != null) {
             roomSessions.get(roomToRemove).remove(sessionId);
         }
-
-        // send the message to all other peers, somebody(sessionId) leave.
-        final SignalMessage menOut = new SignalMessage();
-        menOut.setType(TYPE_LOGOUT);
-        menOut.setSender(sessionId);
-
-        roomSessions.get(roomToRemove).values().forEach(webSocket -> {
-            try {
-                webSocket.sendMessage(new TextMessage(WebSocketUtil.getString(menOut)));
-            } catch (Exception e) {
-                LOG.warn("Error while message sending.", e);
-            }
-        });
     }
 }
