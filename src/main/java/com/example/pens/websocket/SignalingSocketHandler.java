@@ -74,19 +74,17 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
         String roomId = signalMessage.getRoomId();
         signalMessage.setSender(session.getId());
 
-        //방 내부 dest user에게 보내는 코드
-        /*
+
         WebSocketSession destSocket = roomSessions.get(roomId).get(destinationUser);
         // if the socket exists and is open, we go on
         if (destSocket != null && destSocket.isOpen()) {
             // set the sender as current sessionId.
-            signalMessage.setSender(session.getId());
             final String resendingMessage = WebSocketUtil.getString(signalMessage);
             LOG.info("send message {} to {}", resendingMessage, destinationUser);
             destSocket.sendMessage(new TextMessage(resendingMessage));
         }
-         */
 
+        /*
         // 같은 room에 모두 전송 (자신 제외)
         roomSessions.get(roomId).values().forEach(
                 webSocketSession -> {
@@ -98,6 +96,7 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
                     }
                 }
         );
+        */
     }
 
     private void removeUserAndSendLogout(final String sessionId) {
