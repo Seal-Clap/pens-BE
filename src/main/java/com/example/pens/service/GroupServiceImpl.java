@@ -4,8 +4,10 @@ import com.example.pens.domain.*;
 import com.example.pens.domain.redis.GroupInvite;
 import com.example.pens.domain.request.GroupDTO;
 import com.example.pens.domain.request.GroupUserRelationDTO;
+import com.example.pens.domain.websocket.VoiceChannel;
 import com.example.pens.repository.GroupRepository;
 import com.example.pens.repository.UserRepository;
+import com.example.pens.repository.VoiceChannelRepository;
 import com.example.pens.repository.redis.InviteRedisRepository;
 import com.example.pens.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,8 @@ public class GroupServiceImpl implements GroupService {
     private final UserRepository userRepository;
     private final InviteRedisRepository inviteRedisRepository;
     private final JavaMailSender javaMailSender;
+    private final VoiceChannelRepository voiceChannelRepository;
+
     @Override
     public ResponseEntity createGroup(GroupDTO request) {
         Optional<User> userOptional = userRepository.findById(request.getGroupAdminUserId());
@@ -40,13 +44,17 @@ public class GroupServiceImpl implements GroupService {
             else
                 return new ResponseEntity(new CommonResponse(false, "User not found"), HttpStatus.NOT_FOUND);
             users.add(user);
-            groupRepository.save(
-                    Group.builder()
-                            .groupName(request.getGroupName())
-                            .groupAdminUser(user)
-                            .users(users)
-                            .build()
-            );
+            Group group = Group.builder()
+                    .groupName(request.getGroupName())
+                    .groupAdminUser(user)
+                    .users(users)
+                    .build();
+            groupRepository.save(group);
+            VoiceChannel voiceChannel = VoiceChannel.builder()
+                    .group(group)
+                    .channelName("Default Voice Channel")
+                    .build();
+            voiceChannelRepository.save(voiceChannel);
             return new ResponseEntity(new CommonResponse(true, "group create success"), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,7 +67,7 @@ public class GroupServiceImpl implements GroupService {
         Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
         try {
             Group group = groupOptional.get();
-            if(group.getGroupAdminUser().getUserId() != request.getUserId())
+            if (group.getGroupAdminUser().getUserId() != request.getUserId())
                 return new ResponseEntity<CommonResponse>(new CommonResponse(false, "only group admin can delete group"), HttpStatus.UNAUTHORIZED);
             groupRepository.delete(group);
             return new ResponseEntity(new CommonResponse(true, "group delete success"), HttpStatus.OK);
@@ -70,7 +78,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ResponseEntity addUserToGroup(GroupUserRelationDTO request) {
-        System.out.println("debug -> groupid:"+request.getGroupId()+ " and userid:" +request.getUserId());
+        System.out.println("debug -> groupid:" + request.getGroupId() + " and userid:" + request.getUserId());
         Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
         Optional<User> userOptional = userRepository.findById(request.getUserId());
 
@@ -91,7 +99,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ResponseEntity deleteUser(GroupUserRelationDTO request) {
-        System.out.println("debug -> groupid:"+request.getGroupId()+ " and userid:" +request.getUserId());
+        System.out.println("debug -> groupid:" + request.getGroupId() + " and userid:" + request.getUserId());
         Optional<Group> groupOptional = groupRepository.findById(request.getGroupId());
         Optional<User> userOptional = userRepository.findById(request.getUserId());
 
@@ -133,7 +141,7 @@ public class GroupServiceImpl implements GroupService {
 //        }
         GroupInvite groupInvite = new GroupInvite(groupIdRequest, userEmail);
         SimpleMailMessage inviteMail = new SimpleMailMessage();
-        inviteMail.setSubject("[pens'] "+ groupOptional.get().getGroupName() + " group invite Request");
+        inviteMail.setSubject("[pens'] " + groupOptional.get().getGroupName() + " group invite Request");
         // TODO mail text remote server 로 변경
         inviteMail.setTo(userEmail);
         inviteMail.setText("http://13.209.120.19:8080/group/accept-invite/" + groupInvite.getId());
@@ -159,7 +167,7 @@ public class GroupServiceImpl implements GroupService {
         Optional<Group> groupOptional = groupRepository.findById(groupId);
         try {
             Group group = groupOptional.get();
-            if(group.getGroupAdminUser().getUserId() == userId)
+            if (group.getGroupAdminUser().getUserId() == userId)
                 return new ResponseEntity<CommonResponse>(new CommonResponse(true, "admin true"), HttpStatus.OK);
             else
                 return new ResponseEntity<CommonResponse>(new CommonResponse(false, "admin false"), HttpStatus.UNAUTHORIZED);
