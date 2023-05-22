@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DrawingSocketHandler extends TextWebSocketHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(SignalingSocketHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DrawingSocketHandler.class);
 
     private static final String TYPE_INIT = "init";
     private static final String TYPE_LOGOUT = "logout";
@@ -106,7 +106,7 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
         BinaryMessage newMessage = new BinaryMessage(byteBuffer);
 
         // Retrieve the room ID from the session attributes or from the query string
-        // (like you did in afterConnectionEstablished). 
+        // (like you did in afterConnectionEstablished).
         String roomId = (String)session.getAttributes().get("roomId");
 
         roomSessions.get(roomId).values().forEach(
