@@ -22,10 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -51,8 +48,19 @@ public class AwsS3Service {
         try (InputStream inputStream = multipartFile.getInputStream()) {
             amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
-            GroupFile groupFile = GroupFile.builder().fileName(multipartFile.getOriginalFilename()).group(groupRepository.getReferenceById(groupId)).build();
-            groupFileRepository.save(groupFile);
+
+            Optional<GroupFile> existingFile = groupFileRepository.findByFileName(multipartFile.getOriginalFilename());
+            if (existingFile.isPresent()) {
+                // If file with the same name exists, update it.
+                GroupFile groupFile = existingFile.get();
+                groupFile.setFileName(multipartFile.getOriginalFilename());
+                groupFile.setGroup(groupRepository.getReferenceById(groupId));
+                groupFileRepository.save(groupFile);
+            } else {
+                // If no file with the same name exists, save a new one.
+                GroupFile groupFile = GroupFile.builder().fileName(multipartFile.getOriginalFilename()).group(groupRepository.getReferenceById(groupId)).build();
+                groupFileRepository.save(groupFile);
+            }
         } catch (IOException e) {
             return new ResponseEntity(new CommonResponse(false, "File Upload Failed"), HttpStatus.FORBIDDEN);
         }

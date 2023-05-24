@@ -41,20 +41,21 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
             roomSessions.put(roomId, new HashMap<>());
         }
 
-//        final SignalMessage newMenOnBoard = new SignalMessage();
-//        newMenOnBoard.setType(TYPE_INIT);
-//        newMenOnBoard.setSender(session.getId());
-//        newMenOnBoard.setRoomId(roomId);
-//
-//        roomSessions.get(roomId).values().forEach(webSocketSession -> {
-//            try {
-//                webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(newMenOnBoard)));
-//            } catch (Exception e) {
-//                LOG.warn("Error while message sending.", e);
-//            }
-//        });
-
         roomSessions.get(roomId).put(session.getId(), session);
+
+        /*
+        final SignalMessage newMenOnBoard = new SignalMessage();
+        newMenOnBoard.setType(TYPE_INIT);
+        newMenOnBoard.setSender(session.getId());
+        newMenOnBoard.setRoomId(roomId);
+        roomSessions.get(roomId).values().forEach(webSocketSession -> {
+            try {
+                webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(newMenOnBoard)));
+            } catch (Exception e) {
+                LOG.warn("Error while message sending.", e);
+            }
+        });
+        */
     }
 
     @Override
