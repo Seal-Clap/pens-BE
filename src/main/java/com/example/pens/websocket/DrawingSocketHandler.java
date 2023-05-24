@@ -43,7 +43,7 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
 
         roomSessions.get(roomId).put(session.getId(), session);
 
-        /*
+
         final SignalMessage newMenOnBoard = new SignalMessage();
         newMenOnBoard.setType(TYPE_INIT);
         newMenOnBoard.setSender(session.getId());
@@ -55,7 +55,6 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
                 LOG.warn("Error while message sending.", e);
             }
         });
-        */
     }
 
     @Override
