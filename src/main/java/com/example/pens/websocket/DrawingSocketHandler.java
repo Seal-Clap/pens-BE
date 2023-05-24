@@ -50,8 +50,10 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
         newMenOnBoard.setRoomId(roomId);
         roomSessions.get(roomId).values().forEach(webSocketSession -> {
             try {
-                LOG.info("[" + session.getId() + "] init Message broadcast.");
-                webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(newMenOnBoard)));
+                if(!webSocketSession.equals(session)) {
+                    LOG.info("[" + session.getId() + "] init Message broadcast.");
+                    webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(newMenOnBoard)));
+                }
             } catch (Exception e) {
                 LOG.warn("Error while message sending.", e);
             }
