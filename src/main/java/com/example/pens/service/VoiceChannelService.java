@@ -13,5 +13,5 @@ public interface VoiceChannelService {
     public ResponseEntity getChannels(Integer groupId);
     public void putChannelUsers(Integer userId, String roomId);
     public void deleteChannelUser(Integer userId, String roomId);
-    public List<String> getChannelUsers(Integer roomId);
+    public List<String> getChannelUsers(String roomId);
 }

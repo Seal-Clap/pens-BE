@@ -4,10 +4,12 @@ import com.example.pens.domain.CommonResponse;
 import com.example.pens.domain.Group;
 import com.example.pens.domain.websocket.VoiceChannel;
 import com.example.pens.repository.GroupRepository;
+import com.example.pens.repository.UserRepository;
 import com.example.pens.repository.VoiceChannelRepository;
-import com.example.pens.repository.redis.VoiceChannelUserRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,12 +17,12 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class VoiceChannelServiceImpl implements VoiceChannelService {
     private final VoiceChannelRepository voiceChannelRepository;
     private final GroupRepository groupRepository;
-//    private final VoiceChannelUserRepository voiceChannelUserRepository;
-//    private StringRedisTemplate redisTemplate;
+    private final UserRepository userRepository;
+    private StringRedisTemplate stringRedisTemplate;
     @Override
     public ResponseEntity create(Integer groupId, String channelName) {
         try {
@@ -52,17 +54,21 @@ public class VoiceChannelServiceImpl implements VoiceChannelService {
 
     @Override
     public void putChannelUsers(Integer userId, String roomId) {
-        // TODO: redis set (roomId, userName) 삽입
+        SetOperations<String, String> ops = stringRedisTemplate.opsForSet();
+        String userName = userRepository.findById(userId).get().getUserName();
+        ops.add(roomId, userName);
     }
 
     @Override
     public void deleteChannelUser(Integer userId, String roomId) {
-        // TODO: redis (roomId, userName) 삭제
+        SetOperations<String, String> ops = stringRedisTemplate.opsForSet();
+        String userName = userRepository.findById(userId).get().getUserName();
+        ops.remove(roomId, userName);
     }
 
     @Override
-    public List<String> getChannelUsers(Integer roomId) {
-        // TODO: redis set roomId userName 목록 반환
-        return null;
+    public List<String> getChannelUsers(String roomId) {
+        SetOperations<String, String> setOps = stringRedisTemplate.opsForSet();
+        return new ArrayList<>(setOps.members(roomId));
     }
 }
