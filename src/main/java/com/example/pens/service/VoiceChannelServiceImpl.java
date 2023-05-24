@@ -19,8 +19,8 @@ import java.util.*;
 public class VoiceChannelServiceImpl implements VoiceChannelService {
     private final VoiceChannelRepository voiceChannelRepository;
     private final GroupRepository groupRepository;
-    private final VoiceChannelUserRepository voiceChannelUserRepository;
-    private StringRedisTemplate redisTemplate;
+//    private final VoiceChannelUserRepository voiceChannelUserRepository;
+//    private StringRedisTemplate redisTemplate;
     @Override
     public ResponseEntity create(Integer groupId, String channelName) {
         try {
