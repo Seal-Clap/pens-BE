@@ -5,9 +5,9 @@ import com.example.pens.domain.Group;
 import com.example.pens.domain.websocket.VoiceChannel;
 import com.example.pens.repository.GroupRepository;
 import com.example.pens.repository.VoiceChannelRepository;
+import com.example.pens.repository.redis.VoiceChannelUserRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.Any;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,8 @@ import java.util.*;
 public class VoiceChannelServiceImpl implements VoiceChannelService {
     private final VoiceChannelRepository voiceChannelRepository;
     private final GroupRepository groupRepository;
+    private final VoiceChannelUserRepository voiceChannelUserRepository;
+    private StringRedisTemplate redisTemplate;
     @Override
     public ResponseEntity create(Integer groupId, String channelName) {
         try {
@@ -46,5 +48,21 @@ public class VoiceChannelServiceImpl implements VoiceChannelService {
             responseChannels.add(channelMap);
         }
         return new ResponseEntity(responseChannels, HttpStatus.OK);
+    }
+
+    @Override
+    public void putChannelUsers(Integer userId, String roomId) {
+        // TODO: redis set (roomId, userName) 삽입
+    }
+
+    @Override
+    public void deleteChannelUser(Integer userId, String roomId) {
+        // TODO: redis (roomId, userName) 삭제
+    }
+
+    @Override
+    public List<String> getChannelUsers(Integer roomId) {
+        // TODO: redis set roomId userName 목록 반환
+        return null;
     }
 }

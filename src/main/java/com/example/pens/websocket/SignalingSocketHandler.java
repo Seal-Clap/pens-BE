@@ -1,9 +1,11 @@
 package com.example.pens.websocket;
 
 import com.example.pens.domain.websocket.SignalMessage;
+import com.example.pens.repository.redis.VoiceChannelUserRepository;
 import com.example.pens.util.WebSocketUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -24,6 +26,9 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
     //세션 구조 -> Map[ roomId, Map[sessionId, sessionObject] ]
     private final Map<String, Map<String, WebSocketSession>> roomSessions = new HashMap<>();
 
+
+
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         LOG.info("[" + session.getId() + "] Connection established " + session.getId());
@@ -35,6 +40,8 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
         if (!roomSessions.containsKey(roomId)) {
             roomSessions.put(roomId, new HashMap<>());
         }
+        String userId = parameters.getFirst("userId");
+        // TODO: roomId, userId -> service에 만든 함수 이용, 음성 채널 접속 시 redis에 삽입
 
         final SignalMessage newMenOnBoard = new SignalMessage();
         newMenOnBoard.setType(TYPE_INIT);

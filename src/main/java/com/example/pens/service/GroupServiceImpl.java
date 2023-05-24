@@ -142,7 +142,6 @@ public class GroupServiceImpl implements GroupService {
         GroupInvite groupInvite = new GroupInvite(groupIdRequest, userEmail);
         SimpleMailMessage inviteMail = new SimpleMailMessage();
         inviteMail.setSubject("[pens'] " + groupOptional.get().getGroupName() + " group invite Request");
-        // TODO mail text remote server 로 변경
         inviteMail.setTo(userEmail);
         inviteMail.setText("http://13.209.120.19:8080/group/accept-invite/" + groupInvite.getId());
         javaMailSender.send(inviteMail);
