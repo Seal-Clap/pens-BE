@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface GroupFileRepository extends JpaRepository<GroupFile, Integer> {
     List<GroupFile> findGroupFileByGroup(Group group);
 
-    Optional<GroupFile> findByFileName(String originalFilename);
+    Optional<GroupFile> findByFileNameAndGroup(String originalFilename, Group group);
 }

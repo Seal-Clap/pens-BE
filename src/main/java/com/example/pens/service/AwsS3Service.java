@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
 import com.example.pens.domain.CommonResponse;
+import com.example.pens.domain.Group;
 import com.example.pens.domain.GroupFile;
 import com.example.pens.repository.GroupFileRepository;
 import com.example.pens.repository.GroupRepository;
@@ -49,7 +50,8 @@ public class AwsS3Service {
             amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
 
-            Optional<GroupFile> existingFile = groupFileRepository.findByFileName(multipartFile.getOriginalFilename());
+            Optional<Group> group = groupRepository.findById(groupId);
+            Optional<GroupFile> existingFile = groupFileRepository.findByFileNameAndGroup(multipartFile.getOriginalFilename(), group.get());
             if (existingFile.isPresent()) {
                 // If file with the same name exists, update it.
                 GroupFile groupFile = existingFile.get();
