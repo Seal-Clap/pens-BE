@@ -11,7 +11,7 @@ import java.util.Map;
 public interface VoiceChannelService {
     public ResponseEntity create(Integer groupId, String channelName);
     public ResponseEntity getChannels(Integer groupId);
-    public void putChannelUsers(Integer userId, String roomId);
-    public void deleteChannelUser(Integer userId, String roomId);
-    public List<String> getChannelUsers(String roomId);
+    public ResponseEntity putChannelUsers(Integer userId, String channelId);
+    public ResponseEntity deleteChannelUser(Integer userId, String channelId);
+    public List<String> getChannelUsers(String channelId);
 }

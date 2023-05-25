@@ -29,14 +29,13 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
     private final Map<String, Map<String, WebSocketSession>> roomSessions = new HashMap<>();
 
 
-
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         LOG.info("[" + session.getId() + "] Connection established " + session.getId());
 
         //roomId 추출 from uri
         URI uri = session.getUri();
-        MultiValueMap<String,String> parameters = UriComponentsBuilder.fromUri(uri).build().getQueryParams();
+        MultiValueMap<String, String> parameters = UriComponentsBuilder.fromUri(uri).build().getQueryParams();
         String roomId = parameters.getFirst("roomId");
         if (!roomSessions.containsKey(roomId)) {
             roomSessions.put(roomId, new HashMap<>());
@@ -51,7 +50,7 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
 
         roomSessions.get(roomId).values().forEach(webSocketSession -> {
             try {
-                if(!webSocketSession.equals(session))
+                if (!webSocketSession.equals(session))
                     webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(newMenOnBoard)));
             } catch (Exception e) {
                 LOG.warn("Error while message sending.", e);

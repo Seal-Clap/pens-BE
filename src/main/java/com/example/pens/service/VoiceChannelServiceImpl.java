@@ -22,7 +22,7 @@ public class VoiceChannelServiceImpl implements VoiceChannelService {
     private final VoiceChannelRepository voiceChannelRepository;
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
-    private StringRedisTemplate stringRedisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
     @Override
     public ResponseEntity create(Integer groupId, String channelName) {
         try {
@@ -53,22 +53,25 @@ public class VoiceChannelServiceImpl implements VoiceChannelService {
     }
 
     @Override
-    public void putChannelUsers(Integer userId, String roomId) {
+    public ResponseEntity putChannelUsers(Integer userId, String channelId) {
         SetOperations<String, String> ops = stringRedisTemplate.opsForSet();
         String userName = userRepository.findById(userId).get().getUserName();
-        ops.add(roomId, userName);
+        ops.add(channelId, userName);
+        return new ResponseEntity(new CommonResponse(true, "put user success"), HttpStatus.OK);
     }
 
     @Override
-    public void deleteChannelUser(Integer userId, String roomId) {
+    public ResponseEntity deleteChannelUser(Integer userId, String channelId) {
         SetOperations<String, String> ops = stringRedisTemplate.opsForSet();
         String userName = userRepository.findById(userId).get().getUserName();
-        ops.remove(roomId, userName);
+        ops.remove(channelId, userName);
+        return new ResponseEntity(new CommonResponse(true, "put user success"), HttpStatus.OK);
+
     }
 
     @Override
-    public List<String> getChannelUsers(String roomId) {
+    public List<String> getChannelUsers(String channelId) {
         SetOperations<String, String> setOps = stringRedisTemplate.opsForSet();
-        return new ArrayList<>(setOps.members(roomId));
+        return new ArrayList<>(setOps.members(channelId));
     }
 }

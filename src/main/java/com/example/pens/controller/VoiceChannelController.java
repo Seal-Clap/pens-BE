@@ -26,4 +26,19 @@ public class VoiceChannelController {
     public ResponseEntity getChannels(@RequestParam Integer groupId) {
         return voiceChannelService.getChannels(groupId);
     }
+
+    @PostMapping("/enter")
+    public ResponseEntity enterChannel(@RequestParam("userId") Integer userId, @RequestParam("channelId") String channelId) {
+        return voiceChannelService.putChannelUsers(userId, channelId);
+    }
+
+    @GetMapping("/{channelId}/users")
+    public List<String> getChannelUsers(@PathVariable("channelId") String channelId) {
+        return voiceChannelService.getChannelUsers(channelId);
+    }
+
+    @DeleteMapping("/leave")
+    public ResponseEntity leaveChannel(@RequestParam("userId") Integer userId, @RequestParam("channelId") String channelId) {
+        return voiceChannelService.deleteChannelUser(userId, channelId);
+    }
 }
