@@ -41,7 +41,6 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
         if (!roomSessions.containsKey(roomId)) {
             roomSessions.put(roomId, new HashMap<>());
         }
-        String userId = parameters.getFirst("userId");
         // TODO: roomId, userId -> service에 만든 함수 이용, 음성 채널 접속 시 redis에 삽입
 
 
