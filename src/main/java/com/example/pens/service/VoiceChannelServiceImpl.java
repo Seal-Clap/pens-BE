@@ -47,6 +47,7 @@ public class VoiceChannelServiceImpl implements VoiceChannelService {
             channelMap.put("channelId", voiceChannel.getChannelId());
             channelMap.put("channelName", voiceChannel.getChannelName());
             channelMap.put("groupId", voiceChannel.getGroup().getGroupId());
+            channelMap.put("users", getChannelUsers(voiceChannel.getChannelId().toString()));
             responseChannels.add(channelMap);
         }
         return new ResponseEntity(responseChannels, HttpStatus.OK);
