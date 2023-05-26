@@ -1,5 +1,6 @@
 package com.example.pens.controller;
 
+import com.example.pens.domain.request.GroupFileDTO;
 import com.example.pens.service.AwsS3Service;
 import com.example.pens.util.FileUtil;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +53,8 @@ public class FileController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity deleteFile(@RequestParam("groupId") Integer groupId, @RequestParam("fileName") String fileName) {
-        return awsS3Service.deleteFile(groupId, fileName);
+    public ResponseEntity deleteFile(@RequestBody GroupFileDTO request) {
+        return awsS3Service.deleteFile(request.getGroupId(), request.getFileName());
     }
 
 }
