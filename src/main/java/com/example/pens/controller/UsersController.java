@@ -18,6 +18,9 @@ public class UsersController {
         return userService.login(userRequest);
     }
 
+    @GetMapping("/{userId}/name")
+    public String getUserName(@PathVariable("userId") Integer userId) { return userService.getUserName(userId); }
+
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody UserDTO request) {
         return userService.register(request);

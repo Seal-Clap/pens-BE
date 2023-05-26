@@ -98,6 +98,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String getUserName(Integer userId) {
+        return userRepository.findById(userId).get().getUserName();
+    }
+
+    @Override
     public ResponseEntity identify() {
         return new ResponseEntity(userRepository.findByUserEmail(SecurityUtil.getCurrentUserEmail()).getUserId(), HttpStatus.OK);
     }
