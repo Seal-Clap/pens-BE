@@ -51,4 +51,9 @@ public class FileController {
         return headers;
     }
 
+    @PostMapping("/delete")
+    public ResponseEntity deleteFile(@RequestParam("groupId") Integer groupId, @RequestParam("fileName") String fileName) {
+        return awsS3Service.deleteFile(groupId, fileName);
+    }
+
 }

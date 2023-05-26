@@ -1,6 +1,7 @@
 package com.example.pens.service;
 
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
@@ -104,5 +105,23 @@ public class AwsS3Service {
                 })
                 .collect(Collectors.toList());
         return new ResponseEntity(groupFileMaps, HttpStatus.OK);
+    }
+
+    public ResponseEntity deleteFile(Integer groupId, String fileName) {
+        try {
+            String fileKey = FileUtil.buildFileName(groupId, fileName);
+            amazonS3Client.deleteObject(new DeleteObjectRequest(bucketName, fileKey));
+
+            // You might also want to delete the corresponding GroupFile from your database
+            Optional<Group> group = groupRepository.findById(groupId);
+            Optional<GroupFile> existingFile = groupFileRepository.findByFileNameAndGroup(fileName, group.get());
+            if (existingFile.isPresent()) {
+                groupFileRepository.delete(existingFile.get());
+            }
+
+            return new ResponseEntity(new CommonResponse(true, "File deleted successfully"), HttpStatus.OK);
+        } catch (AmazonServiceException e) {
+            return new ResponseEntity(new CommonResponse(false, "File deletion failed: " + e.getErrorMessage()), HttpStatus.FORBIDDEN);
+        }
     }
 }
