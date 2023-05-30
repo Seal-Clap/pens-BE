@@ -22,6 +22,7 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
 
     private static final String TYPE_INIT = "init";
     private static final String TYPE_LOGOUT = "logout";
+    private static final String TYPE_LIST = "list";
 
     //세션 구조 -> Map[ roomId, Map[sessionId, sessionObject] ]
     private final Map<String, Map<String, WebSocketSession>> roomSessions = new HashMap<>();
@@ -35,7 +36,9 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
         URI uri = session.getUri();
         MultiValueMap<String,String> parameters = UriComponentsBuilder.fromUri(uri).build().getQueryParams();
         String roomId = parameters.getFirst("roomId");
+        String userId = parameters.getFirst("userId");
         session.getAttributes().put("roomId", roomId);
+        session.getAttributes().put("userId", userId);
 
         if (!roomSessions.containsKey(roomId)) {
             roomSessions.put(roomId, new HashMap<>());
@@ -53,6 +56,29 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
                 if(!webSocketSession.equals(session)) {
                     LOG.info("[" + session.getId() + "] init Message broadcast.");
                     webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(newMenOnBoard)));
+                }
+            } catch (Exception e) {
+                LOG.warn("Error while message sending.", e);
+            }
+        });
+
+        final SignalMessage userListOnBoard = new SignalMessage();
+        userListOnBoard.setType(TYPE_LIST);
+        userListOnBoard.setRoomId(roomId);
+
+        StringBuffer listData = new StringBuffer("");
+
+        roomSessions.get(roomId).values().forEach(webSocketSession -> {
+           listData.append(webSocketSession.getAttributes().get("userId")+" ");
+        });
+
+        userListOnBoard.setData(listData.toString());
+
+        roomSessions.get(roomId).values().forEach(webSocketSession -> {
+            try {
+                if(!webSocketSession.equals(session)) {
+                    LOG.info("[" + session.getId() + "] list Message broadcast.");
+                    webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(userListOnBoard)));
                 }
             } catch (Exception e) {
                 LOG.warn("Error while message sending.", e);
