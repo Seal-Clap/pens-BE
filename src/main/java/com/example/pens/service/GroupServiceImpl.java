@@ -52,7 +52,7 @@ public class GroupServiceImpl implements GroupService {
             groupRepository.save(group);
             VoiceChannel voiceChannel = VoiceChannel.builder()
                     .group(group)
-                    .channelName("Default Voice Channel")
+                    .channelName("기본 음성 채널")
                     .build();
             voiceChannelRepository.save(voiceChannel);
             return new ResponseEntity(new CommonResponse(true, "group create success"), HttpStatus.CREATED);
