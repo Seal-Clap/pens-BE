@@ -62,26 +62,8 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
             }
         });
 
-        final SignalMessage userListOnBoard = new SignalMessage();
-        userListOnBoard.setType(TYPE_LIST);
-        userListOnBoard.setRoomId(roomId);
 
-        StringBuffer listData = new StringBuffer("");
-
-        roomSessions.get(roomId).values().forEach(webSocketSession -> {
-           listData.append(webSocketSession.getAttributes().get("userId")+" ");
-        });
-
-        userListOnBoard.setData(listData.toString());
-
-        roomSessions.get(roomId).values().forEach(webSocketSession -> {
-            try {
-                LOG.info("[" + session.getId() + "] list Message broadcast.");
-                webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(userListOnBoard)));
-            } catch (Exception e) {
-                LOG.warn("Error while message sending.", e);
-            }
-        });
+        sendUserList(roomId, session.getId());
     }
 
     @Override
@@ -163,5 +145,30 @@ public class DrawingSocketHandler extends TextWebSocketHandler {
         if (roomToRemove != null) {
             roomSessions.get(roomToRemove).remove(sessionId);
         }
+
+        sendUserList(roomToRemove, sessionId);
+    }
+
+    private void sendUserList(final String roomId, String sessionId) {
+        final SignalMessage userListOnBoard = new SignalMessage();
+        userListOnBoard.setType(TYPE_LIST);
+        userListOnBoard.setRoomId(roomId);
+
+        StringBuffer listData = new StringBuffer("");
+
+        roomSessions.get(roomId).values().forEach(webSocketSession -> {
+            listData.append(webSocketSession.getAttributes().get("userId")+" ");
+        });
+
+        userListOnBoard.setData(listData.toString());
+
+        roomSessions.get(roomId).values().forEach(webSocketSession -> {
+            try {
+                LOG.info("[" + sessionId + "] list Message broadcast.");
+                webSocketSession.sendMessage(new TextMessage(WebSocketUtil.getString(userListOnBoard)));
+            } catch (Exception e) {
+                LOG.warn("Error while message sending.", e);
+            }
+        });
     }
 }
