@@ -57,4 +57,4 @@
 </table>
 
 ## Front-End Repository
-https://github.com/Seal-Clap/pens-server
+https://github.com/Seal-Clap/pens-client
